@@ -1,57 +1,82 @@
 package com.pangbai.weblog.tool;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.util.Log;
 
+import android.util.Log;
+import android.util.Pair;
+import android.widget.Toast;
+
+
+
+import com.pangbai.weblog.execute.cmdExer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Init {
+
+
     public static String filesDirPath;
-    public static boolean  isRoot;
-   public static String linuxDeployDirPath;
-   public static  String fontPath;
-   public  static  String keyPath;
-    public  static  String tmpPath;
-   public static String binDirPath;
+
+
+
 
  //  public static String shellPath;
+    public  static  String libDir,binDir,nodeDir,weblogDir;
+
    public static String busyboxPath;
+
     public Init(Activity ct){
 
-
-
         File files=ct.getFilesDir();
-
+        libDir=ct.getApplicationInfo().nativeLibraryDir;
+        busyboxPath=libDir+"/busybox";
         filesDirPath=files.getAbsolutePath();
-        fontPath=filesDirPath+"/weblog/terminal/font.ttf";
-        keyPath=filesDirPath+"/weblog/terminal/keys";
+        binDir=filesDirPath+"/usr/bin";
+        nodeDir=binDir+"/node";
+        weblogDir=filesDirPath+"/weblog";
+
+
+        if (!new File( binDir).exists()){
+            Toast.makeText(ct,"Loading",Toast.LENGTH_LONG).show();
+            new Thread(){
+                @Override
+                public  void  run(){
+                    cmdExer.execute( libDir+"/links.sh " +libDir,false,true);
+                    cmdExer.execute(busyboxPath+" tar Jxf "+libDir+"/env -C /",false,true);
+
+                    cmdExer.execute(busyboxPath+" --install -s "+binDir,false,true);
+                   // mdialog.dismiss();
+                   // util.ensureStoragePermissionGranted(ct);
+
+
+
+                }
+            }.start();
+
+        }else if (!checkLink(nodeDir)) {
+            Log.e("weblog",nodeDir);
+             cmdExer.execute("sh "+weblogDir+"/links.sh "+libDir,false,false);
+            cmdExer.execute(busyboxPath+" --install -s "+binDir,false,false);
+        }
+
+
 
 
 
     }
 
 
-  void   createSymlinks() throws IOException {
-      final List<Pair<String, String>> symlinks = new ArrayList<>(50);
-      BufferedReader symlinksReader = new BufferedReader(new InputStreamReader());
-      String line;
-      while ((line = symlinksReader.readLine()) != null) {
-          String[] parts = line.split("←");
-          if (parts.length != 2)
-              throw new RuntimeException("Malformed symlink line: " + line);
-          String oldPath = parts[0];
-          String newPath = "/data/data/com.pangbai.weblog/files/usr" + "/" + parts[1];
-          symlinks.add(Pair.create(oldPath, newPath));
 
-
-      }}
+   boolean checkLink(String link){
+       int result = cmdExer.execute("[ -e " + link + " ] && "+"[ -L " + link + " ]",false,true);
+       return result == 0;
+    }
 
 
 }
