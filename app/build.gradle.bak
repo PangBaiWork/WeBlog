@@ -7,26 +7,63 @@ plugins {
 android {
     namespace 'com.pangbai.weblog'
     compileSdk 33
-    buildToolsVersion "34.0.4"
+    buildToolsVersion "33.0.0"
 
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
     defaultConfig {
         applicationId "com.pangbai.weblog"
         minSdk 24
         targetSdk 33
+        ndkVersion "19.2.5345600"
         versionCode 1
         versionName "1.0"
-        
+        ndk {//让gradle知道ndk的配置
+            abiFilter "arm64-v8a"//so文件的平
+        }
         vectorDrawables { 
             useSupportLibrary true
         }
+        externalNativeBuild {
+            /*  cmake {
+                  cppFlags ''
+              }*/
+            ndkBuild {
+                arguments "NDK_DEBUG=1"
+                abiFilters 'arm64-v8a'
+            }
+        }
     }
-    signingConfigs {
+    
+   packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+    
+   packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+signingConfigs {
     release {
         keyAlias 'dowork'
         keyPassword '123456'
         storeFile file('release.keystore')
         storePassword '123456'
 
+    }
+    debug {
+        keyAlias 'dowork'
+        keyPassword '123456'
+        storeFile file('release.keystore')
+        storePassword '123456'
+
+    }
     }
 
 
@@ -43,6 +80,15 @@ android {
     //    kotlinCompilerExtensionVersion = "1.1.1"
    
     }
+    externalNativeBuild {
+        /* cmake {
+             path file('src/main/cpp/CMakeLists.txt')
+             version '3.22.1'
+         }*/
+        ndkBuild {
+            path file('src/main/jni/Android.mk')
+        }
+    }
 
     buildFeatures {
         compose true
@@ -54,10 +100,10 @@ android {
 }
 
 dependencies {
-
+implementation 'com.google.android.material:material:1.9.0'
 implementation "androidx.compose.material3:material3:1.0.1"
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
-
+   implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("androidx.appcompat:appcompat:1.6.1")
  //   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
   //  implementation("com.google.android.material:material:1.9.0")

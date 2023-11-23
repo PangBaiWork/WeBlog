@@ -17,6 +17,8 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.utilities.DynamicColor;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.tool.Init;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         new  Init(this);
+    //    DynamicColors.applyIfAvailable(this,R.style.AppTheme);
         String[] n={"sh"};
         String envp[] = {
                 //"PATH=" + "/system/bin"
