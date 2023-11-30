@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <!-- Base application theme. -->
-  <style name="Base.AppTheme" parent="Theme.Material3.Dark.NoActionBar">
-    <!-- Customize your theme here. -->
+  <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
+    <item name="android:statusBarColor">?android:attr/colorBackground</item>
+    <item name="android:navigationBarColor">?android:attr/colorBackground</item>
+
+       <!-- Customize your theme here. -->
     <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
   </style>
 
