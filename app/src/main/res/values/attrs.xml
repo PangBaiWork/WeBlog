@@ -1,0 +1,28 @@
+
+<resources>
+    <attr name="colorCustomColor1" format="color" />
+    <attr name="colorOnCustomColor1" format="color" />
+    <attr name="colorCustomColor1Container" format="color" />
+    <attr name="colorOnCustomColor1Container" format="color" />
+    <attr name="harmonizeCustomColor1" format="boolean" />
+    <attr name="colorCustomColor2" format="color" />
+    <attr name="colorOnCustomColor2" format="color" />
+    <attr name="colorCustomColor2Container" format="color" />
+    <attr name="colorOnCustomColor2Container" format="color" />
+    <attr name="harmonizeCustomColor2" format="boolean" />
+    <attr name="colorCustomColor3" format="color" />
+    <attr name="colorOnCustomColor3" format="color" />
+    <attr name="colorCustomColor3Container" format="color" />
+    <attr name="colorOnCustomColor3Container" format="color" />
+    <attr name="harmonizeCustomColor3" format="boolean" />
+    <attr name="colorCustomColor4" format="color" />
+    <attr name="colorOnCustomColor4" format="color" />
+    <attr name="colorCustomColor4Container" format="color" />
+    <attr name="colorOnCustomColor4Container" format="color" />
+    <attr name="harmonizeCustomColor4" format="boolean" />
+    <attr name="colorCustomColor5" format="color" />
+    <attr name="colorOnCustomColor5" format="color" />
+    <attr name="colorCustomColor5Container" format="color" />
+    <attr name="colorOnCustomColor5Container" format="color" />
+    <attr name="harmonizeCustomColor5" format="boolean" />
+</resources>

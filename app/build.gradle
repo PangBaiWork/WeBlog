@@ -18,7 +18,7 @@ android {
         applicationId "com.pangbai.weblog"
         minSdk 24
         targetSdk 33
-        ndkVersion "19.2.5345600"
+        ndkVersion "24.0.8215888"
         versionCode 1
         versionName "1.0"
         ndk {//让gradle知道ndk的配置
@@ -37,6 +37,7 @@ android {
             }
         }
     }
+  
 signingConfigs {
     release {
         keyAlias 'dowork'
@@ -79,7 +80,6 @@ signingConfigs {
     }
 
     buildFeatures {
-        compose true
         viewBinding true
         dataBinding true
         
