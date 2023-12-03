@@ -4,9 +4,11 @@ plugins {
     
 }
 
+
+
 android {
     namespace 'com.pangbai.weblog'
-    compileSdk 33
+    compileSdk 34
     buildToolsVersion "33.0.0"
 
     packagingOptions {
@@ -17,7 +19,8 @@ android {
     defaultConfig {
         applicationId "com.pangbai.weblog"
         minSdk 24
-        targetSdk 33
+        //noinspection EditedTargetSdkVersion
+        targetSdk 34
         ndkVersion "24.0.8215888"
         versionCode 1
         versionName "1.0"
@@ -87,12 +90,13 @@ signingConfigs {
     
 }
 
+
 dependencies {
-implementation 'com.google.android.material:material:1.9.0'
-implementation "androidx.compose.material3:material3:1.0.1"
-   implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+implementation 'com.google.android.material:material:1.10.0'
+implementation "androidx.compose.material3:material3:1.1.2"
+
     implementation("androidx.appcompat:appcompat:1.6.1")
- //   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation project(path: ':markdownView')
+    //   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
   //  implementation("com.google.android.material:material:1.9.0")
 }

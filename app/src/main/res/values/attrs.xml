@@ -25,4 +25,5 @@
     <attr name="colorCustomColor5Container" format="color" />
     <attr name="colorOnCustomColor5Container" format="color" />
     <attr name="harmonizeCustomColor5" format="boolean" />
+
 </resources>
