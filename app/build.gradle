@@ -94,6 +94,7 @@ signingConfigs {
 dependencies {
 implementation 'com.google.android.material:material:1.10.0'
 implementation "androidx.compose.material3:material3:1.1.2"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation project(path: ':markdownView')

@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
 
-    <LinearLayout
+    android:layout_height="match_parent">
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
+            android:id="@+id/appbar_layout"
+            android:layout_alignParentTop="true"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.Toolbar
@@ -25,16 +27,35 @@
                 app:subtitle="Blog"
                 app:subtitleTextColor="?attr/colorPrimary"
                 tools:openDrawer="start"
-
                 app:title="WeBlog" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <br.tiagohm.markdownview.MarkdownView
+            android:layout_below="@id/appbar_layout"
             android:id="@+id/markdown_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:ignore="MissingClass" />
-    </LinearLayout>
+
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:id="@+id/progressbar"
+            android:layout_above="@id/tab_layout"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+              android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_below="@id/tab_layout"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
 
    <RelativeLayout
         android:layout_width="match_parent"
@@ -44,7 +65,6 @@
        android:paddingTop="28dp"
         android:layout_gravity="end"
        tools:ignore="RtlSymmetry">
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_gravity="fill_vertical"
@@ -58,12 +78,12 @@
            android:layout_alignParentBottom="true"
            android:layout_marginEnd="20dp"
            android:orientation="vertical"
+
            android:layout_marginBottom="50dp">
            <com.google.android.material.floatingactionbutton.FloatingActionButton
                android:id="@+id/drawer_float_action_parents"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginBottom="5dp"
                app:useCompatPadding="true"
                android:src="@drawable/ic_file_previous" />
            <com.google.android.material.floatingactionbutton.FloatingActionButton
