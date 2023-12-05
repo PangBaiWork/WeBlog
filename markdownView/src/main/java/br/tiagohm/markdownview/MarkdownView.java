@@ -5,8 +5,17 @@ import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewParent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.AbsListView;
+import android.widget.GridView;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.orhanobut.logger.Logger;
 import com.vladsch.flexmark.Extension;
@@ -234,9 +243,10 @@ public class MarkdownView extends WebView {
         String html = parseBuildAndRender(text);
 
         StringBuilder sb = new StringBuilder();
+
         sb.append("<html>\n");
         sb.append("<head>\n");
-        //Folha de estilo padrão.
+        //Folha de estilo padrão. binding.markdownView
         if (mStyleSheets.size() <= 0) {
             mStyleSheets.add(new InternalStyleSheet());
         }
@@ -406,4 +416,41 @@ public class MarkdownView extends WebView {
             loadMarkdown(s);
         }
     }
+
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            ViewParent viewParent = findViewParentIfNeeds(this);
+            if (viewParent != null) {
+                viewParent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        if (clampedX) {
+            ViewParent viewParent = findViewParentIfNeeds(this);
+            if (viewParent != null) {
+                viewParent.requestDisallowInterceptTouchEvent(false);
+            }
+        }
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+    }
+
+    private ViewParent findViewParentIfNeeds(MarkdownView tag) {
+        ViewParent parent = tag.getParent();
+        if (parent == null) {
+            return parent;
+        }
+        if (parent instanceof ViewPager || parent instanceof AbsListView || parent instanceof ScrollView || parent instanceof HorizontalScrollView) {
+            return parent;
+        } else {
+           return parent;
+        }
+    }
+
 }

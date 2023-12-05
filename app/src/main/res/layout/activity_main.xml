@@ -4,58 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent">
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        app:menu="@menu/main_activity_menu"
+        app:subtitle="Blog"
+        app:subtitleTextColor="?attr/colorPrimary"
+        app:title="WeBlog"
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:id="@+id/appbar_layout"
-            android:layout_alignParentTop="true"
-            android:layout_height="wrap_content">
+        tools:openDrawer="start" />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_anchor="@+id/toolbar"
+        app:layout_anchorGravity="bottom|center" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorSurface"
-                app:menu="@menu/main_activity_menu"
-                app:subtitle="Blog"
-                app:subtitleTextColor="?attr/colorPrimary"
-                tools:openDrawer="start"
-                app:title="WeBlog" />
-        </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
 
         <br.tiagohm.markdownview.MarkdownView
-            android:layout_below="@id/appbar_layout"
             android:id="@+id/markdown_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:ignore="MissingClass" />
-
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:id="@+id/progressbar"
-            android:layout_above="@id/tab_layout"/>
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-              android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"/>
+            android:orientation="vertical"
+            android:id="@+id/bottom_sheet"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="50dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_below="@id/tab_layout"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                app:paddingBottomSystemWindowInsets="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_anchor="@+id/markdown_view"
+                app:layout_anchorGravity="bottom|center" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
    <RelativeLayout
         android:layout_width="match_parent"
@@ -71,7 +82,7 @@
             android:layout_width="match_parent"
             android:id="@+id/recycle_files"
             android:layout_height="match_parent"/>
-       <LinearLayout
+         <LinearLayout
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_alignParentEnd="true"
@@ -104,17 +115,5 @@
         app:headerLayout="@layout/activity_header"
         app:menu="@menu/main_activity_menu"/>
 
-
-
-
-
-
-
-    <com.pangbai.terminal.view.SuperTerminalView
-        android:id="@+id/CmdView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="?attr/colorSurface"
-        android:visibility="gone" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

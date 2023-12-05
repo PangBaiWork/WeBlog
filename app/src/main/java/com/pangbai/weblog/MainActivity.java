@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -28,6 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.tabs.TabLayout;
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
@@ -41,36 +45,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     SuperTerminalView cmdView;
-
-    View.OnTouchListener touchTabListener=new View.OnTouchListener() {
-        private int initialY;
-        private float  initialTouchY;
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-           RelativeLayout.LayoutParams param=(RelativeLayout.LayoutParams) v.getLayoutParams();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    initialY = param.bottomMargin;
-                    initialTouchY = event.getRawY();
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    int offsetY = (int) (event.getRawY() - initialTouchY);
-                    param.bottomMargin = initialY - offsetY;
-                   v.setLayoutParams(param);
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setTabLayout();
         setTerminal();
     }
+
 
 
     @Override
@@ -184,14 +165,14 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     void setRecycleView() {
-        binding.recycleFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
+
         filesListAdapter mAdapter = new filesListAdapter(file -> {
             if (file.getName().endsWith(".md")) {
                 binding.markdownView.loadMarkdownFromFile(file);
                 binding.drawerLayout.closeDrawer(GravityCompat.END);
             }
         });
-
+        binding.recycleFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
         binding.recycleFiles.setAdapter(mAdapter);
         binding.recycleFiles.setLayoutManager(new LinearLayoutManager(this));
         mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
@@ -204,9 +185,10 @@ public class MainActivity extends AppCompatActivity {
             mAdapter.setList(Objects.requireNonNull(mAdapter.mCurrentfile.getParentFile()));
             binding.recycleFiles.scheduleLayoutAnimation();
         });
+
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "ResourceType"})
     void setTabLayout() {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -218,21 +200,49 @@ public class MainActivity extends AppCompatActivity {
         params.height = 400;
         params.width = LinearLayout.LayoutParams.MATCH_PARENT;
         cmdView.setLayoutParams(params);
-        cmdView.setBackgroundColor(Color.BLACK);
-        views.add(cmdView);
+        cmdView.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary,200) );
 
-        views.add(getLayoutInflater().inflate(R.layout.activity_header, null));
+        MarkdownView markdown=new MarkdownView(this);
+        markdown.setLayoutParams(params);
+        views.add(markdown);
+        views.add(cmdView);
+        markdown.addStyleSheet(new Github());
+       markdown.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // views.add(getLayoutInflater().inflate(R.layout.third_page,null));
         mainViewPagerAdapter fragmentAdapter = new mainViewPagerAdapter(views);
         viewPager.setAdapter(fragmentAdapter);
         // tabLayout跟viewpager关联
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+        LinearLayout bottomSheet=findViewById(R.id.bottom_sheet);
+        BottomSheetBehavior behavior=BottomSheetBehavior.from(bottomSheet);
+        behavior.setHalfExpandedRatio(0.5F);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            }
+        });
         //  tabLayout.getTabAt(2).setIcon(R.drawable.ic_launcher_background);
 
-        binding.progressbar.setOnTouchListener(touchTabListener);
+      //  findViewById(R.id.progressbar).setOnTouchListener(touchTabListener);
 
     }
+
+
+
 
 
 }

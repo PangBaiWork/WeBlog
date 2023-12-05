@@ -114,7 +114,11 @@ public class filesListAdapter extends RecyclerView.Adapter<Holder> {
         public	void onClick(File file);
     }
 
+
+
 }
+
+
 
 class Holder extends RecyclerView.ViewHolder {
     TextView mItemName;

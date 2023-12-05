@@ -47,9 +47,9 @@ public class mainViewPagerAdapter extends PagerAdapter {
         // 返回每个 Fragment 的标签文本
         switch (position) {
             case 0:
-                return "Terminal";
-            case 1:
                 return "Visual";
+            case 1:
+                return "Terminal";
             case 2:
                 return "第三页";
             default:
