@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.MetricAffectingSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,8 +39,10 @@ import com.google.android.material.color.DynamicColors;
 import com.google.android.material.tabs.TabLayout;
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
+import com.pangbai.weblog.editor.BoldEditHandler;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
+import com.pangbai.weblog.view.CustomPunctuationSpan;
 import com.pangbai.weblog.view.filesListAdapter;
 import com.pangbai.weblog.view.mainViewPagerAdapter;
 
@@ -44,9 +50,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
+import io.noties.markwon.Markwon;
+import io.noties.markwon.core.spans.StrongEmphasisSpan;
+import io.noties.markwon.editor.AbstractEditHandler;
+import io.noties.markwon.editor.MarkwonEditor;
+import io.noties.markwon.editor.MarkwonEditorTextWatcher;
+import io.noties.markwon.editor.MarkwonEditorUtils;
+import io.noties.markwon.editor.PersistedSpans;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -64,13 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         setRecycleView();
-        binding.markdownView.addStyleSheet(new Github());
+       // binding.markdownView.addStyleSheet(new Github());
         // binding.markdownView.loadMarkdown("**MarkdownView**");
         // binding.markdownView.loadMarkdownFromAsset("markdown1.md");
-        binding.markdownView.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
+      //  binding.markdownView.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // binding.markdownView.loadMarkdownFromUrl("url");
         setTabLayout();
         setTerminal();
+        setEditor();
     }
 
 
@@ -101,12 +116,28 @@ public class MainActivity extends AppCompatActivity {
         String path = getApplicationInfo().nativeLibraryDir;
         //   Log.e("weblog",path);
         cmdView.setProcess(path + "/busybox", getFilesDir().getAbsolutePath(), n, envp, 0);
-
-       cmdView.runProcess();
+        cmdView.runProcess();
         cmdView.requestFocus();
 
 
     }
+    void setEditor(){
+        Markwon markdown=Markwon.create(this);
+      //  MarkwonEditor editor=MarkwonEditor.create(markdown);
+        final MarkwonEditor editor = MarkwonEditor.builder(Markwon.create(this))
+                .punctuationSpan(CustomPunctuationSpan.class, CustomPunctuationSpan::new).useEditHandler(new BoldEditHandler()).build();
+
+
+
+        binding.editor.addTextChangedListener(MarkwonEditorTextWatcher.withPreRender(
+                editor,
+                Executors.newCachedThreadPool(),
+                binding.editor));
+
+
+
+    }
+
 
     void setLayout() {
 
@@ -168,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
         filesListAdapter mAdapter = new filesListAdapter(file -> {
             if (file.getName().endsWith(".md")) {
-                binding.markdownView.loadMarkdownFromFile(file);
+               // binding.markdownView.loadMarkdownFromFile(file);
                 binding.drawerLayout.closeDrawer(GravityCompat.END);
             }
         });
@@ -240,9 +271,5 @@ public class MainActivity extends AppCompatActivity {
       //  findViewById(R.id.progressbar).setOnTouchListener(touchTabListener);
 
     }
-
-
-
-
 
 }

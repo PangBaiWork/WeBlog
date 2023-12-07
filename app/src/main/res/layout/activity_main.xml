@@ -36,12 +36,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
+    <!--
         <br.tiagohm.markdownview.MarkdownView
             android:id="@+id/markdown_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:ignore="MissingClass" />
+            tools:ignore="MissingClass" /> -->
+        <EditText
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="**text**"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
