@@ -1,4 +1,4 @@
-package com.pangbai.weblog.editor.handle;
+package io.noties.markwon.app.samples.editor.shared;
 
 import android.text.Editable;
 import android.text.Spanned;
