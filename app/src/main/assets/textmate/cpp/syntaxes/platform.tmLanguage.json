@@ -6,7 +6,7 @@
 	],
 	"version": "https://github.com/textmate/c.tmbundle/commit/60daf83b9d45329524f7847a75e9298b3aae5805",
 	"name": "Platform",
-	"scopeName": "lngpck.source.c.platform",
+	"scopeName": "source.c.platform",
 	"comment": "This file was generated with clang-C using MacOSX10.15.sdk",
 	"patterns": [
 		{

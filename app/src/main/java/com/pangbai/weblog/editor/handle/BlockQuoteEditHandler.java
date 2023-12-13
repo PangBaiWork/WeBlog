@@ -7,13 +7,11 @@ import androidx.annotation.NonNull;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.MarkwonTheme;
-
-import io.noties.markwon.core.spans.CodeSpan;
+import io.noties.markwon.core.spans.BlockQuoteSpan;
 import io.noties.markwon.editor.EditHandler;
-import io.noties.markwon.editor.MarkwonEditorUtils;
 import io.noties.markwon.editor.PersistedSpans;
 
-public class CodeEditHandler implements EditHandler<CodeSpan> {
+public class BlockQuoteEditHandler implements EditHandler<BlockQuoteSpan> {
 
   private MarkwonTheme theme;
 
@@ -24,7 +22,7 @@ public class CodeEditHandler implements EditHandler<CodeSpan> {
 
   @Override
   public void configurePersistedSpans(@NonNull PersistedSpans.Builder builder) {
-    builder.persistSpan(CodeSpan.class, () -> new CodeSpan(theme));
+    builder.persistSpan(BlockQuoteSpan.class, () -> new BlockQuoteSpan(theme));
   }
 
   @Override
@@ -32,23 +30,21 @@ public class CodeEditHandler implements EditHandler<CodeSpan> {
     @NonNull PersistedSpans persistedSpans,
     @NonNull Editable editable,
     @NonNull String input,
-    @NonNull CodeSpan span,
+    @NonNull BlockQuoteSpan span,
     int spanStart,
     int spanTextLength) {
-   final MarkwonEditorUtils.Match match = MarkwonEditorUtils.findDelimited(input, spanStart, "`");
-    if (match != null) {
-      editable.setSpan(
-        persistedSpans.get(CodeSpan.class),
-        match.start(),
-        match.end(),
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-      );
-    }
+    // todo: here we should actually find a proper ending of a block quote...
+    editable.setSpan(
+      persistedSpans.get(BlockQuoteSpan.class),
+      spanStart,
+      spanStart + spanTextLength,
+      Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+    );
   }
 
   @NonNull
   @Override
-  public Class<CodeSpan> markdownSpanType() {
-    return CodeSpan.class;
+  public Class<BlockQuoteSpan> markdownSpanType() {
+    return BlockQuoteSpan.class;
   }
 }

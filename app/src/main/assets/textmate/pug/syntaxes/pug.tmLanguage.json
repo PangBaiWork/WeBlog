@@ -6,7 +6,7 @@
 	],
 	"version": "https://github.com/davidrios/pug-tmbundle/commit/ae1dd60ca4aa4b45617f236d584216cd8d19eecf",
 	"name": "Pug",
-	"scopeName": "lngpck.text.pug",
+	"scopeName": "text.pug",
 	"patterns": [
 		{
 			"match": "^(!!!|doctype)(\\s*[a-zA-Z0-9-_]+)?",

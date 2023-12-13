@@ -6,7 +6,7 @@
 	],
 	"version": "https://github.com/jeff-hykin/better-shell-syntax/commit/1bad17d8badf6283125aaa7c31be06ba64146a0f",
 	"name": "Shell Script",
-	"scopeName": "lngpck.source.shell",
+	"scopeName": "source.shell",
 	"patterns": [
 		{
 			"include": "#initial_context"

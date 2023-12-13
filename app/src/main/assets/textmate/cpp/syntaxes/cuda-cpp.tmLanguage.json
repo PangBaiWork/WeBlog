@@ -6,7 +6,7 @@
 	],
 	"version": "https://github.com/NVIDIA/cuda-cpp-grammar/commit/81e88eaec5170aa8585736c63627c73e3589998c",
 	"name": "CUDA C++",
-	"scopeName": "lngpck.source.cuda-cpp",
+	"scopeName": "source.cuda-cpp",
 	"patterns": [
 		{
 			"include": "#ever_present_context"

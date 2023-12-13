@@ -1,6 +1,8 @@
 
 package com.pangbai.weblog;
 
+
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
@@ -14,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -22,31 +25,36 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
-import com.pangbai.weblog.editor.handle.BoldEditHandler;
+import com.pangbai.weblog.editor.TextMate;
+import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
-import com.pangbai.weblog.view.CustomPunctuationSpan;
+
 import com.pangbai.weblog.view.filesListAdapter;
 import com.pangbai.weblog.view.mainViewPagerAdapter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
+
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
-import io.noties.markwon.Markwon;
-import io.noties.markwon.editor.MarkwonEditor;
-import io.noties.markwon.editor.MarkwonEditorTextWatcher;
+import io.github.rosemoe.sora.lang.Language;
+import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
+
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     SuperTerminalView cmdView;
+    MarkdownView markdown;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         new permission(this).checkPermission();
 
 
+
+
         setRecycleView();
        // binding.markdownView.addStyleSheet(new Github());
         // binding.markdownView.loadMarkdown("**MarkdownView**");
@@ -67,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         setTabLayout();
         setTerminal();
         setEditor();
+        setCodeText(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
+
     }
 
 
@@ -102,22 +114,47 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    void setEditor(){
-        Markwon markdown=Markwon.create(this);
-      //  MarkwonEditor editor=MarkwonEditor.create(markdown);
-        final MarkwonEditor editor = MarkwonEditor.builder(Markwon.create(this))
-                .punctuationSpan(CustomPunctuationSpan.class, CustomPunctuationSpan::new).useEditHandler(new BoldEditHandler()).build();
+    void setEditor() {
+        binding.editor.setCursorAnimationEnabled(false);
 
 
 
-        binding.editor.addTextChangedListener(MarkwonEditorTextWatcher.withPreRender(
-                editor,
-                Executors.newCachedThreadPool(),
-                binding.editor));
+            try {
+                TextMate.initializeLogic(binding.editor,this);
+            }catch (Exception e){
+                e.printStackTrace();
+             //   Log.e("editor",e)
+            }
+
+
 
 
 
     }
+
+    void  setCodeText(File file){
+        /*TextMateLanguage language= (TextMateLanguage) binding.editor.getEditorLanguage();
+        language.updateLanguage(TextMate.findLanguageScopeName(file.getName()));*/
+        TextMate.setLanguage(binding.editor,file.getName());
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    String string= IO.readFileToString(file);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.editor.setText(string);
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
+
+    }
+
 
 
     void setLayout() {
@@ -179,10 +216,19 @@ public class MainActivity extends AppCompatActivity {
     void setRecycleView() {
 
         filesListAdapter mAdapter = new filesListAdapter(file -> {
-            if (file.getName().endsWith(".md")) {
                // binding.markdownView.loadMarkdownFromFile(file);
+           if (file.getName().endsWith(".md")){
+                String subtitle=IO.getMdTitle(file);
+
+                binding.toolbar.setSubtitle(subtitle==null?file.getName(): subtitle);
+
+            }else {
+               binding.toolbar.setSubtitle("Blog Name");
+           }
+                setCodeText(file);
+                markdown.loadMarkdownFromFile(file);
                 binding.drawerLayout.closeDrawer(GravityCompat.END);
-            }
+
         });
         binding.recycleFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
         binding.recycleFiles.setAdapter(mAdapter);
@@ -214,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         cmdView.setLayoutParams(params);
         cmdView.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary,200) );
 
-        MarkdownView markdown=new MarkdownView(this);
+         markdown=new MarkdownView(this);
         markdown.setLayoutParams(params);
         views.add(markdown);
         views.add(cmdView);

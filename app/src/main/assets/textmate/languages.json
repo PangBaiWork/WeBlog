@@ -50,6 +50,7 @@
         "meta.embedded.block.java": "java",
         "meta.embedded.block.xml": "xml",
         "meta.embedded.block.python": "python"
+
       }
     },
     {
@@ -72,26 +73,32 @@
     },
     {
       "name": "YAML",
-      "scopeName": "lngpck.source.yaml",
+      "scopeName": "source.yaml",
       "grammar": "textmate/yaml/syntaxes/yaml.tmLanguage.json",
       "languageConfiguration": "textmate/yaml/language-configuration.json"
     },
     {
       "name": "pug",
-      "scopeName": "lngpck.text.pug",
+      "scopeName": "text.pug",
       "grammar": "textmate/pug/syntaxes/pug.tmLanguage.json",
       "languageConfiguration": "textmate/pug/language-configuration.json"
     },
     {
-      "name": "shell",
-      "scopeName": "lngpck.source.shell",
+      "name": "shellscript",
+      "scopeName": "source.shell",
       "grammar": "textmate/shell/syntaxes/shell-unix-bash.tmLanguage.json",
       "languageConfiguration": "textmate/shell/language-configuration.json"
     },
     {
       "name": "cpp",
       "scopeName": "source.cpp",
-      "grammar": "textmate/cpp/syntaxes/cpp.tmLanguage",
+      "grammar": "textmate/cpp/syntaxes/cpp.tmLanguage.json",
+      "languageConfiguration": "textmate/cpp/language-configuration.json"
+    },
+    {
+      "name": "c",
+      "scopeName": "source.c",
+      "grammar": "textmate/cpp/syntaxes/c.tmLanguage.json",
       "languageConfiguration": "textmate/cpp/language-configuration.json"
     }
   ]

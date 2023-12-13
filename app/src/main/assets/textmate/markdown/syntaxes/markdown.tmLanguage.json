@@ -63,7 +63,7 @@
       "while": "(^|\\G)\\s*(>) ?"
     },
     "fenced_code_block_css": {
-      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(css|css.erb)((\\s+|:|,|\\{|\\?)[^`~]*)?$)",
+      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(css|css.erb||nasm)((\\s+|:|,|\\{|\\?)[^`~]*)?$)",
       "name": "markup.fenced_code.block.markdown",
       "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
       "beginCaptures": {
@@ -162,7 +162,7 @@
       ]
     },
     "fenced_code_block_java": {
-      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(java|bsh|cpp)((\\s+|:|,|\\{|\\?)[^`~]*)?$)",
+      "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(java|bsh)((\\s+|:|,|\\{|\\?)[^`~]*)?$)",
       "name": "markup.fenced_code.block.markdown",
       "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
       "beginCaptures": {
