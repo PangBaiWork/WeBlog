@@ -70,14 +70,24 @@
             android:id="@+id/editor"/>
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/bottom_sheet"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="50dp"
+            app:behavior_peekHeight="45dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+         <HorizontalScrollView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+            <com.pangbai.weblog.view.SymInputView
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:orientation="horizontal"
+                android:background="?attr/colorSurface"
+
+                android:id="@+id/edit_symbol"/>
+         </HorizontalScrollView>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
@@ -93,6 +103,32 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/editor"
+            app:layout_anchorGravity="bottom|right"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/float_action_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add"
+                style="?attr/floatingActionButtonStyle"
+                app:useCompatPadding="true"/>
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/float_action_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_file_previous"
+                style="?attr/floatingActionButtonStyle"
+                app:useCompatPadding="true" />
+        </LinearLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
 
@@ -100,7 +136,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/drawer_right_bg"
-        android:paddingStart="35dp"
+        android:paddingStart="25dp"
        android:paddingTop="28dp"
         android:layout_gravity="end"
        tools:ignore="RtlSymmetry">

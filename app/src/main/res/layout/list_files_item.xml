@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:gravity="center_vertical"
-
-    android:orientation="horizontal">
+    android:paddingStart="15dp"
+    android:background="@drawable/drawer_right_bg"
+    android:orientation="horizontal"
+    tools:ignore="RtlSymmetry">
 
     <LinearLayout
         android:id="@+id/list_item_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:background="@drawable/ic_folder"
         android:orientation="horizontal" />
 
@@ -19,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="folder"
+        android:maxLines="2"
         android:textStyle="bold" />
 
 </LinearLayout>

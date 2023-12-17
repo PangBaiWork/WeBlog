@@ -2,4 +2,11 @@
 <resources>
     <string name="app_name">WeBlog</string>
 
+    <string name="file_action_rename">Rename</string>
+    <string name="file_action_delete">Delete</string>
+    <string name="cancle">Cancle</string>
+    <string name="confirm">Confirm</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="save">Save</string>
 </resources>

@@ -5,12 +5,13 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/dialog_text_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="17dp"
         android:layout_marginLeft="17dp"
+
         android:minHeight="20dp" />
 
 </LinearLayout>

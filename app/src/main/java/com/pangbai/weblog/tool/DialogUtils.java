@@ -1,19 +1,18 @@
-package com.pangbai.terminal.view;
+package com.pangbai.weblog.tool;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.pangbai.weblog.R;
 
 
-public class dialogUtils {
+public class DialogUtils {
 
     public interface OnPositiveClickListener {
         void onPositiveButtonClick();
@@ -29,7 +28,7 @@ public class dialogUtils {
     public static void showConfirmationDialog(Context context, String title, String message,
                                               String positiveButtonText, String negativeButtonText,
                                               final OnPositiveClickListener positiveClickListener,final OnNegativeClickListener negativeClickListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
         builder.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
@@ -76,12 +75,19 @@ public class dialogUtils {
     }
 
      */
+    public static void showInputDialog(Context context, String title,String text,final DialogInputListener pos){
+        EditText editText=  showInputDialog(context,title,new String[]{"确定","取消"},pos,null).findViewById(R.id.dialog_text_input);
+        if (editText != null) {
+            editText.setText(text);
+            editText.setSelection(text.length());
+        }
+    }
     public static void showInputDialog(Context context, String title,final DialogInputListener pos){
-        showInputDialog(context,title,new String[]{"确定","取消"},pos,null);
+        showInputDialog(context,title,new String[]{util.getSrcStr(context,R.string.confirm),util.getSrcStr(context,R.string.cancle)},pos,null);
     }
 
-    public static void showInputDialog(Context context, String title,String[] button,final DialogInputListener pos,final DialogInputListener neg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public static AlertDialog showInputDialog(Context context, String title,String[] button,final DialogInputListener pos,final DialogInputListener neg) {
+        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_input, null);
 
@@ -112,6 +118,7 @@ public class dialogUtils {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         inputEditText.requestFocus();
+        return alertDialog;
     }
 
 

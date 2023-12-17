@@ -14,9 +14,9 @@ import java.util.List;
  * time:2023/7/15
  * author: 敬往事一杯酒
  */
-public class mainViewPagerAdapter extends PagerAdapter {
+public class MainViewPagerAdapter extends PagerAdapter {
     private List<View> mList;
-    public mainViewPagerAdapter(List<View> list){
+    public MainViewPagerAdapter(List<View> list){
         this.mList = list;
     }
     // 返回要滑动的View的个数
@@ -51,7 +51,7 @@ public class mainViewPagerAdapter extends PagerAdapter {
             case 1:
                 return "Terminal";
             case 2:
-                return "第三页";
+                return "Posts";
             default:
                 return "";
         }

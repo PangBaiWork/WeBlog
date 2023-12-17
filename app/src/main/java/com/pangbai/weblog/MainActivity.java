@@ -2,18 +2,21 @@
 package com.pangbai.weblog;
 
 
-
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.contentcapture.ContentCaptureContext;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +24,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -33,11 +37,16 @@ import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
 
-import com.pangbai.weblog.view.filesListAdapter;
-import com.pangbai.weblog.view.mainViewPagerAdapter;
+import com.pangbai.weblog.view.FilesListAdapter;
+import com.pangbai.weblog.view.MainViewPagerAdapter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,14 +54,17 @@ import java.util.Objects;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
-import io.github.rosemoe.sora.lang.Language;
-import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
+import io.github.rosemoe.sora.text.Content;
+import io.github.rosemoe.sora.text.ContentIO;
+import io.github.rosemoe.sora.widget.SymbolInputView;
 
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     SuperTerminalView cmdView;
     MarkdownView markdown;
+    Content editorText;
+    File currentFile;
 
     @SuppressLint("ResourceType")
     @Override
@@ -66,13 +78,11 @@ public class MainActivity extends AppCompatActivity {
         new permission(this).checkPermission();
 
 
-
-
         setRecycleView();
-       // binding.markdownView.addStyleSheet(new Github());
+        // binding.markdownView.addStyleSheet(new Github());
         // binding.markdownView.loadMarkdown("**MarkdownView**");
         // binding.markdownView.loadMarkdownFromAsset("markdown1.md");
-      //  binding.markdownView.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
+        //  binding.markdownView.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // binding.markdownView.loadMarkdownFromUrl("url");
         setTabLayout();
         setTerminal();
@@ -80,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         setCodeText(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
 
     }
-
 
 
     @Override
@@ -114,39 +123,45 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     void setEditor() {
         binding.editor.setCursorAnimationEnabled(false);
 
+        binding.editSymbol.init(binding.editor);
+
+     //  binding.editSymbol.addSymbols(SymbolInputView.s,sym,offset);
+
+        
 
 
-            try {
-                TextMate.initializeLogic(binding.editor,this);
-            }catch (Exception e){
-                e.printStackTrace();
-             //   Log.e("editor",e)
-            }
-
-
-
+        try {
+           TextMate.initializeLogic(binding.editor, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //   Log.e("editor",e)
+        }
+        binding.editor.setWordwrap(true,true);
+        binding.floatActionUndo.setOnClickListener(v -> binding.editor.undo());
 
 
     }
 
-    void  setCodeText(File file){
+    void setCodeText(File file) {
         /*TextMateLanguage language= (TextMateLanguage) binding.editor.getEditorLanguage();
         language.updateLanguage(TextMate.findLanguageScopeName(file.getName()));*/
-        TextMate.setLanguage(binding.editor,file.getName());
-        new Thread(){
+        TextMate.setLanguage(binding.editor, file.getName());
+        new Thread() {
             @Override
             public void run() {
                 try {
-                    String string= IO.readFileToString(file);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.editor.setText(string);
-                        }
+                    editorText=ContentIO.createFrom(new FileReader(file));
+                    currentFile=file;
+                    runOnUiThread(() -> {
+                        binding.editor.setText(editorText);
+                       // markdown.loadMarkdown(string);
                     });
+
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -154,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         }.start();
 
     }
-
 
 
     void setLayout() {
@@ -206,6 +220,24 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.menu_folder) {
                 binding.drawerLayout.openDrawer(GravityCompat.END);
+            }else if (id==R.id.menu_undo){
+                binding.editor.undo();
+            }else if (id==R.id.menu_redo){
+                binding.editor.redo();
+            }else if (id==R.id.menu_save){
+
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            try {
+                                ContentIO.writeTo(editorText,new FileOutputStream(currentFile),true);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }.start();
+
+
             }
             return false;
         });
@@ -215,19 +247,22 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     void setRecycleView() {
 
-        filesListAdapter mAdapter = new filesListAdapter(file -> {
-               // binding.markdownView.loadMarkdownFromFile(file);
-           if (file.getName().endsWith(".md")){
-                String subtitle=IO.getMdTitle(file);
+        FilesListAdapter mAdapter = new FilesListAdapter(
+                file -> {
+                    // binding.markdownView.loadMarkdownFromFile(file);
+                    if (file.getName().endsWith(".md")) {
+                        String subtitle = IO.getMdTitle(file);
+                        binding.toolbar.setSubtitle(subtitle == null ? file.getName() : subtitle);
+                    } else {
+                        binding.toolbar.setSubtitle("Blog Name");
+                    }
+                    setCodeText(file);
 
-                binding.toolbar.setSubtitle(subtitle==null?file.getName(): subtitle);
+                    binding.drawerLayout.closeDrawer(GravityCompat.END);
 
-            }else {
-               binding.toolbar.setSubtitle("Blog Name");
-           }
-                setCodeText(file);
-                markdown.loadMarkdownFromFile(file);
-                binding.drawerLayout.closeDrawer(GravityCompat.END);
+                },
+                file -> {
+
 
         });
         binding.recycleFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
@@ -236,12 +271,12 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
         binding.drawerFloatActionHome.setOnClickListener(v -> {
             mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
-            binding.recycleFiles.scheduleLayoutAnimation();
+         //   binding.recycleFiles.scheduleLayoutAnimation();
 
         });
         binding.drawerFloatActionParents.setOnClickListener(v -> {
             mAdapter.setList(Objects.requireNonNull(mAdapter.mCurrentfile.getParentFile()));
-            binding.recycleFiles.scheduleLayoutAnimation();
+        //    binding.recycleFiles.scheduleLayoutAnimation();
         });
 
     }
@@ -254,32 +289,64 @@ public class MainActivity extends AppCompatActivity {
         List<View> views = new ArrayList<>();
 
         cmdView = new SuperTerminalView(this, null);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT );
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.height = 400;
         params.width = LinearLayout.LayoutParams.MATCH_PARENT;
         cmdView.setLayoutParams(params);
-        cmdView.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary,200) );
+        cmdView.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
 
-         markdown=new MarkdownView(this);
+        markdown = new MarkdownView(this);
         markdown.setLayoutParams(params);
+
+        RecyclerView articalList=new RecyclerView(this);
+        articalList.setLayoutParams(params);
+
         views.add(markdown);
         views.add(cmdView);
+        views.add(articalList);
         markdown.addStyleSheet(new Github());
-       markdown.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
+        markdown.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // views.add(getLayoutInflater().inflate(R.layout.third_page,null));
-        mainViewPagerAdapter fragmentAdapter = new mainViewPagerAdapter(views);
+        MainViewPagerAdapter fragmentAdapter = new MainViewPagerAdapter(views);
         viewPager.setAdapter(fragmentAdapter);
         // tabLayout跟viewpager关联
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
-        LinearLayout bottomSheet=findViewById(R.id.bottom_sheet);
-        BottomSheetBehavior behavior=BottomSheetBehavior.from(bottomSheet);
-        behavior.setHalfExpandedRatio(0.5F);
+        LinearLayout bottomSheet = findViewById(R.id.bottom_sheet);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setHalfExpandedRatio(0.3F);
+        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState==BottomSheetBehavior.STATE_COLLAPSED){
+                    Log.e("visible","true");
+                    binding.editSymbol.setVisibility(View.VISIBLE);
+                }else{
+                    Log.e("visible","false");
+                    binding.editSymbol.setVisibility(View.GONE);
+                }
+                // focus on cmdview;
+                if (newState==BottomSheetBehavior.STATE_EXPANDED){
+                    if (tabLayout.getSelectedTabPosition()==1){
+                        cmdView.requestFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                // focus on cmdview;
+                if (tab.getPosition()==1){
+                    cmdView.requestFocus();
+                }
             }
 
             @Override
@@ -293,9 +360,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //  tabLayout.getTabAt(2).setIcon(R.drawable.ic_launcher_background);
-
-      //  findViewById(R.id.progressbar).setOnTouchListener(touchTabListener);
 
     }
 

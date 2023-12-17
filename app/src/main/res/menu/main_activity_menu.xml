@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/outLogin"
-        android:title="退出登录" />
+        android:id="@+id/menu_undo"
+        android:title="@string/undo" />
     <item
-        android:id="@+id/appModel"
-        android:title="夜间模式" />
+        android:id="@+id/menu_redo"
+        android:title="@string/redo" />
+    <item
+        android:id="@+id/menu_save"
+        android:title="@string/save"/>
 
     <item
         android:id="@+id/menu_folder"
-        android:title="收藏"
+        android:title="Folder"
         android:icon="@drawable/ic_folder"
         app:showAsAction="ifRoom" />
 </menu>
