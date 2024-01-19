@@ -26,9 +26,6 @@ public class util {
             handler.post(run);
 
     }
-    public static String getSrcStr(Context context,int src){
-        return context.getResources().getString(src);
-    }
 
 
 }

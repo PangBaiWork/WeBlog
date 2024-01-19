@@ -31,14 +31,17 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     public File mCurrentfile;
     public File[] childFiles;
     private final OnFilesListClickCallBack mOnclick;
-    OnFilesListLongClickCallBack mOnLongChick;
+
     ViewGroup parent;
+    TextView pathView;
     Context context;
 
 
-    public FilesListAdapter(OnFilesListClickCallBack mOnclick, OnFilesListLongClickCallBack mOnLongChick) {
+
+    public FilesListAdapter(TextView pathView,OnFilesListClickCallBack mOnclick) {
+        this.pathView=pathView;
         this.mOnclick = mOnclick;
-        this.mOnLongChick = mOnLongChick;
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -52,14 +55,14 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
         // For list Click & LongClick
         holder.itemView.setOnClickListener(arg0 -> {
             File targetFile = childFiles[holder.getAdapterPosition()];
+            if (targetFile.getName().equals("db.json"))
+                return;
             if (targetFile.isDirectory()) {
-                if (Objects.requireNonNull(targetFile.list()).length != 0) {
                     setList(targetFile);
-                } else {
-                    Snackbar.make(parent, "No File Found", Snackbar.LENGTH_SHORT).show();
-                }
             } else if (targetFile.exists()) {
                 mOnclick.onClick(targetFile);
+            }else {
+                Snackbar.make(parent, "No File Found", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -84,20 +87,29 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                 } else if (id == R.id.file_action_rename) {
 
                     DialogUtils.showInputDialog(context,
-                            context.getResources().getString(R.string.file_action_rename), targetFile.getName(),
+                            context.getResources().getString(R.string.file_action_rename), targetFile.getAbsolutePath(),
                             userInput -> {
-                                if (IO.renameFile(targetFile, userInput)) {
-                                    setList(Objects.requireNonNull(targetFile.getParentFile()));
-                                } else {
-                                    Snackbar.make(parent, "Failed to rename", Snackbar.LENGTH_LONG).show();
-                                }
+                                Snackbar.make(parent, "moving files", Snackbar.LENGTH_SHORT).show();
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        boolean move = IO.renameOrMoveFile(targetFile, userInput);
+                                        util.runOnUiThread(() -> {
+                                            if (move) {
+                                                Snackbar.make(parent, "rename success", Snackbar.LENGTH_SHORT).show();
+                                                setList(Objects.requireNonNull(targetFile.getParentFile()));
+                                            }else{
+                                                Snackbar.make(parent, "rename failed", Snackbar.LENGTH_SHORT).show();}
+                                        });
+                                    }
+                                }.start();
+
                             });
 
                 }
                 return false;
             });
             pop.show();
-
             return true;
         });
 
@@ -109,23 +121,19 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     @Override
     public void onBindViewHolder(@NonNull Holder mholder, int position) {
         int res = R.drawable.ic_file;
-        String name=childFiles[position].getName();
+        String name = childFiles[position].getName();
         if (childFiles[position].isDirectory()) {
             res = R.drawable.ic_folder;
         } else if (name.endsWith(".md")) {
             res = R.drawable.ic_file_markdown;
             String title;
-            if ((title=IO.getMdTitle(childFiles[position]))!=null)
-                name=name+" | "+title;
+            if ((title = IO.getMdTitle(childFiles[position])) != null)
+                name = name + " | " + title;
 
         }
-        int finalRes = res;
-        String finalName = name;
-        util.runOnUiThread(() -> {
-            mholder.mItemIcon.setBackgroundResource(finalRes);
-            mholder.mItemName.setText(finalName);
-        });
 
+        mholder.mItemIcon.setBackgroundResource(res);
+        mholder.mItemName.setText(name);
 
 
     }
@@ -134,11 +142,16 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     public int getItemCount() {
         return childFiles == null ? 0 : childFiles.length;
     }
+    public String getCurrentDir(){
+        return mCurrentfile.getAbsolutePath();
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(File files) {
         if (!files.exists() || !files.canRead()) {
+
             Snackbar.make(parent, "Can Not Open This Folder", Snackbar.LENGTH_SHORT).show();
+
             return;
         }
 
@@ -153,6 +166,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                 return file1.getName().compareToIgnoreCase(file2.getName());
             }
         });
+        pathView.setText(files.getAbsolutePath());
 
         notifyDataSetChanged();
         if (parent != null)
@@ -166,9 +180,6 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
         public void onClick(File file);
     }
 
-    public interface OnFilesListLongClickCallBack {
-        public void onLongClick(File file);
-    }
 
 
 }

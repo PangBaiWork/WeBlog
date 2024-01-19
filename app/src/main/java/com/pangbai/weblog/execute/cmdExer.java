@@ -2,6 +2,10 @@ package com.pangbai.weblog.execute;
 
 
 
+import android.system.Os;
+
+import com.pangbai.weblog.tool.Init;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,6 +43,9 @@ public class cmdExer {
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
+
+
+
                 System.out.println(line);
                 result += line;
                 lastLine = line;

@@ -1,4 +1,4 @@
-package com.pangbai.terminal.view;
+package com.pangbai.weblog.view;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
@@ -28,7 +28,7 @@ public class CustomTextView extends AppCompatTextView {
             SpannableStringBuilder builder = new SpannableStringBuilder();
 
             for (int i = 0; i < lines.length; i++) {
-                int colonIndex = lines[i].indexOf(':');
+                int colonIndex = lines[i].indexOf('|');
                 if (colonIndex >= 0 && colonIndex < lines[i].length() - 1) {
                     SpannableStringBuilder lineBuilder = new SpannableStringBuilder(lines[i]);
                     lineBuilder.setSpan(new RelativeSizeSpan(0.8f), colonIndex + 1, lines[i].length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);

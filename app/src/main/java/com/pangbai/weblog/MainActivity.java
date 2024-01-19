@@ -28,11 +28,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.editor.TextMate;
+import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
@@ -57,6 +59,7 @@ import br.tiagohm.markdownview.css.styles.Github;
 import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.text.ContentIO;
 import io.github.rosemoe.sora.widget.SymbolInputView;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -130,10 +133,6 @@ public class MainActivity extends AppCompatActivity {
         binding.editSymbol.init(binding.editor);
 
      //  binding.editSymbol.addSymbols(SymbolInputView.s,sym,offset);
-
-        
-
-
         try {
            TextMate.initializeLogic(binding.editor, this);
         } catch (Exception e) {
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     currentFile=file;
                     runOnUiThread(() -> {
                         binding.editor.setText(editorText);
-                       // markdown.loadMarkdown(string);
+
                     });
 
 
@@ -248,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
     void setRecycleView() {
 
         FilesListAdapter mAdapter = new FilesListAdapter(
+                binding.drawerCurrentPath,
                 file -> {
                     // binding.markdownView.loadMarkdownFromFile(file);
                     if (file.getName().endsWith(".md")) {
@@ -260,20 +260,41 @@ public class MainActivity extends AppCompatActivity {
 
                     binding.drawerLayout.closeDrawer(GravityCompat.END);
 
-                },
-                file -> {
-
-
-        });
-        binding.recycleFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
-        binding.recycleFiles.setAdapter(mAdapter);
-        binding.recycleFiles.setLayoutManager(new LinearLayoutManager(this));
+                }
+              );
+        binding.recycleviewFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
+        binding.recycleviewFiles.setAdapter(mAdapter);
+        binding.recycleviewFiles.setLayoutManager(new LinearLayoutManager(this));
         mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
         binding.drawerFloatActionHome.setOnClickListener(v -> {
             mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
          //   binding.recycleFiles.scheduleLayoutAnimation();
 
         });
+        binding.drawerCurrentPath.setOnClickListener(v -> {
+            DialogUtils.showInputDialog(this,getString(R.string.jump_to),userInput -> mAdapter.setList(new File(userInput)));
+        });
+        binding.drawerFloatActionAdd.setOnClickListener(v -> {
+            String prefix=  mAdapter.getCurrentDir()+"/";
+            DialogUtils.showInputDialog(this,getString(R.string.create_file) ,
+                    new String[]{getString(R.string.folder),getString(R.string.file)},
+                    userInput->{
+                      if (IO.createFileOrDir(prefix+userInput,true)){
+                          mAdapter.setList(new File(prefix+userInput));
+                      }else {
+                          Snackbar.make(binding.recycleviewFiles,getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
+                      }
+                    },
+                    userInput -> {
+                        if (IO.createFileOrDir(prefix+userInput,false)){
+                            mAdapter.setList(mAdapter.mCurrentfile);
+                        }else {
+                            Snackbar.make(binding.recycleviewFiles,getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+        });
+
         binding.drawerFloatActionParents.setOnClickListener(v -> {
             mAdapter.setList(Objects.requireNonNull(mAdapter.mCurrentfile.getParentFile()));
         //    binding.recycleFiles.scheduleLayoutAnimation();
@@ -298,12 +319,11 @@ public class MainActivity extends AppCompatActivity {
         markdown = new MarkdownView(this);
         markdown.setLayoutParams(params);
 
-        RecyclerView articalList=new RecyclerView(this);
-        articalList.setLayoutParams(params);
+
 
         views.add(markdown);
         views.add(cmdView);
-        views.add(articalList);
+        //views.add(articalList);
         markdown.addStyleSheet(new Github());
         markdown.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // views.add(getLayoutInflater().inflate(R.layout.third_page,null));

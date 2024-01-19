@@ -2,11 +2,16 @@
 <resources>
     <string name="app_name">WeBlog</string>
 
-    <string name="file_action_rename">Rename</string>
+    <string name="file_action_rename">Rename/Move to</string>
     <string name="file_action_delete">Delete</string>
     <string name="cancle">Cancle</string>
     <string name="confirm">Confirm</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="save">Save</string>
+    <string name="create_file">"Create a new File/Folder "</string>
+    <string name="file">File</string>
+    <string name="folder">Folder</string>
+    <string name="notice_action_failed">operation failed</string>
+    <string name="jump_to">Jump to</string>
 </resources>

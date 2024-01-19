@@ -212,3 +212,4 @@ JNIEXPORT void JNICALL Java_com_pangbai_terminal_JNI_close(JNIEnv* TERMUX_UNUSED
 {
     close(fileDescriptor);
 }
+

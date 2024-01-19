@@ -83,7 +83,7 @@ public class DialogUtils {
         }
     }
     public static void showInputDialog(Context context, String title,final DialogInputListener pos){
-        showInputDialog(context,title,new String[]{util.getSrcStr(context,R.string.confirm),util.getSrcStr(context,R.string.cancle)},pos,null);
+        showInputDialog(context,title,new String[]{context.getString(R.string.confirm),context.getString(R.string.cancle)},pos,null);
     }
 
     public static AlertDialog showInputDialog(Context context, String title,String[] button,final DialogInputListener pos,final DialogInputListener neg) {

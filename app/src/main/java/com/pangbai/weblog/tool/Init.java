@@ -29,15 +29,17 @@ public class Init {
  //  public static String shellPath;
     public  static  String libDir,binDir,nodeDir,weblogDir;
 
-   public static String busyboxPath;
+   public static String busyboxPath,shPath;
 
     public Init(Activity ct){
 
         File files=ct.getFilesDir();
         libDir=ct.getApplicationInfo().nativeLibraryDir;
         busyboxPath=libDir+"/busybox";
+
         filesDirPath=files.getAbsolutePath();
         binDir=filesDirPath+"/usr/bin";
+        shPath=binDir+"/sh";
         nodeDir=binDir+"/node";
         weblogDir=filesDirPath+"/weblog";
 

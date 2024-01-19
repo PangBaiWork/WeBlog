@@ -4,14 +4,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp">
-
+<com.google.android.material.textfield.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="17dp"
+    android:layout_marginLeft="17dp"
+    android:layout_marginTop="10dp">
     <com.google.android.material.textfield.TextInputEditText
+        android:hint="Input"
         android:id="@+id/dialog_text_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="17dp"
-        android:layout_marginLeft="17dp"
 
         android:minHeight="20dp" />
-
+</com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
