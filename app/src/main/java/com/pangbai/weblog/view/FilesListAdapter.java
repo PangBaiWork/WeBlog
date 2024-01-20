@@ -3,12 +3,10 @@ package com.pangbai.weblog.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
@@ -21,8 +19,6 @@ import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.util;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -37,9 +33,8 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     Context context;
 
 
-
-    public FilesListAdapter(TextView pathView,OnFilesListClickCallBack mOnclick) {
-        this.pathView=pathView;
+    public FilesListAdapter(TextView pathView, OnFilesListClickCallBack mOnclick) {
+        this.pathView = pathView;
         this.mOnclick = mOnclick;
 
     }
@@ -58,10 +53,10 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
             if (targetFile.getName().equals("db.json"))
                 return;
             if (targetFile.isDirectory()) {
-                    setList(targetFile);
+                setList(targetFile);
             } else if (targetFile.exists()) {
                 mOnclick.onClick(targetFile);
-            }else {
+            } else {
                 Snackbar.make(parent, "No File Found", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -78,16 +73,37 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                         @Override
                         public void run() {
                             // use shell to delete for better speed
-                            IO.deleteFolder(targetFile);
+                            IO.deleteFileOrFolder(targetFile);
                             util.runOnUiThread(() -> {
                                 setList(Objects.requireNonNull(targetFile.getParentFile()));
                             });
                         }
                     }.start();
+                } else if (id==R.id.file_action_copy) {
+                    DialogUtils.showInputDialog(context,
+                           context.getString(R.string.copy_to) , targetFile.getAbsolutePath(),
+                            userInput -> {
+                                Snackbar.make(parent, "copying files", Snackbar.LENGTH_SHORT).show();
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        boolean copy = IO.copyFileOrFolder(targetFile, userInput);
+                                        util.runOnUiThread(() -> {
+                                            if (copy) {
+                                                Snackbar.make(parent, "copy success", Snackbar.LENGTH_SHORT).show();
+                                                setList(Objects.requireNonNull(targetFile.getParentFile()));
+                                            } else {
+                                                Snackbar.make(parent, "copy failed", Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                }.start();
+
+                            });
                 } else if (id == R.id.file_action_rename) {
 
                     DialogUtils.showInputDialog(context,
-                            context.getResources().getString(R.string.file_action_rename), targetFile.getAbsolutePath(),
+                            context.getString(R.string.file_action_rename), targetFile.getAbsolutePath(),
                             userInput -> {
                                 Snackbar.make(parent, "moving files", Snackbar.LENGTH_SHORT).show();
                                 new Thread() {
@@ -98,8 +114,9 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                                             if (move) {
                                                 Snackbar.make(parent, "rename success", Snackbar.LENGTH_SHORT).show();
                                                 setList(Objects.requireNonNull(targetFile.getParentFile()));
-                                            }else{
-                                                Snackbar.make(parent, "rename failed", Snackbar.LENGTH_SHORT).show();}
+                                            } else {
+                                                Snackbar.make(parent, "rename failed", Snackbar.LENGTH_SHORT).show();
+                                            }
                                         });
                                     }
                                 }.start();
@@ -142,7 +159,8 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     public int getItemCount() {
         return childFiles == null ? 0 : childFiles.length;
     }
-    public String getCurrentDir(){
+
+    public String getCurrentDir() {
         return mCurrentfile.getAbsolutePath();
     }
 
@@ -179,7 +197,6 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     public interface OnFilesListClickCallBack {
         public void onClick(File file);
     }
-
 
 
 }

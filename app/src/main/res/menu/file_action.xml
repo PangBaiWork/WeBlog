@@ -5,6 +5,9 @@
         android:id="@+id/file_action_rename"
         android:title="@string/file_action_rename" />
     <item
+        android:id="@+id/file_action_copy"
+        android:title="@string/copy_to" />
+    <item
         android:id="@+id/file_action_delete"
         android:title="@string/file_action_delete" />
 </menu>

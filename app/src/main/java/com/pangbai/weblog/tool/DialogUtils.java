@@ -92,30 +92,24 @@ public class DialogUtils {
         View dialogView = inflater.inflate(R.layout.dialog_input, null);
 
         EditText inputEditText = dialogView.findViewById(R.id.dialog_text_input);
-
         builder.setView(dialogView)
                 .setTitle(title)
-                .setPositiveButton(button[0], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (pos==null)
-                            return;
-                        String userInput = inputEditText.getText().toString();
-                            pos.onConfirm(userInput);
-                    }
+                .setPositiveButton(button[0], (dialog, which) -> {
+                    if (pos==null)
+                        return;
+                    String userInput = inputEditText.getText().toString();
+                        pos.onConfirm(userInput);
                 })
-                .setNegativeButton(button[1], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (neg == null)
-                            return;
-                        String userInput = inputEditText.getText().toString();
-                            neg.onConfirm(userInput);
+                .setNegativeButton(button[1], (dialog, which) -> {
+                    if (neg == null)
+                        return;
+                    String userInput = inputEditText.getText().toString();
+                        neg.onConfirm(userInput);
 
-                    }
                 });
 
         AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setWindowAnimations(R.style.DialogAnim);
         alertDialog.show();
         inputEditText.requestFocus();
         return alertDialog;

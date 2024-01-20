@@ -13,4 +13,7 @@
     <string name="folder">文件夹</string>
     <string name="notice_action_failed">操作执行失败</string>
     <string name="jump_to">跳转到</string>
+    <string name="create_article_text">创建新文章: 标题</string>
+    <string name="copy_to">复制到</string>
+    <string name="create_article_btn">创建</string>
 </resources>

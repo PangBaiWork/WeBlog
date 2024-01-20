@@ -1,7 +1,5 @@
 package com.pangbai.weblog.tool;
 
-import android.os.Build;
-import android.os.FileUtils;
 import android.system.Os;
 import android.util.Log;
 
@@ -11,10 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 public class IO {
 
@@ -67,8 +61,15 @@ public class IO {
         // return   cmdExer.execute("mv " + file.getAbsolutePath()+" " + newFile.getAbsolutePath(), false)==0;
         // return file.renameTo(newFile);
     }
+    public static boolean copyFileOrFolder(File source,String target) {
+        File newFile=new File(target);
+        if (newFile.exists()||target.contains(source.getAbsolutePath()))
+            return false;
 
-    public static boolean deleteFolder(File folder) {
+        int result = cmdExer.execute("cp -r " + source.getAbsolutePath() +" " + target, false);
+        return result == 0;
+    }
+    public static boolean deleteFileOrFolder(File folder) {
         int result = cmdExer.execute("rm -rf " + folder.getAbsolutePath(), false);
         return result == 0;
     }

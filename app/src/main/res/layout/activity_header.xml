@@ -20,18 +20,4 @@
     tools:ignore="HardcodedText">
 
 </TextView>
-    <com.google.android.material.chip.ChipGroup
-    android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chip_1"
-        style="@style/Widget.Material3.Chip.Input.Elevated"
-        
-        android:layout_width="match_parent"
-        android:text="input"
-        android:layout_height="wrap_content" />
-
-
-
-</com.google.android.material.chip.ChipGroup>
 </LinearLayout>

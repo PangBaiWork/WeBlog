@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.contentcapture.ContentCaptureContext;
@@ -34,11 +35,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.editor.TextMate;
+import com.pangbai.weblog.global.ThemeUtil;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
 
+import com.pangbai.weblog.view.ArticleCreateFragment;
 import com.pangbai.weblog.view.FilesListAdapter;
 import com.pangbai.weblog.view.MainViewPagerAdapter;
 
@@ -95,11 +98,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        this.binding = null;
-    }
 
     void setTerminal() {
         String[] n = {"sh"};
@@ -140,7 +138,14 @@ public class MainActivity extends AppCompatActivity {
             //   Log.e("editor",e)
         }
         binding.editor.setWordwrap(true,true);
+
+
         binding.floatActionUndo.setOnClickListener(v -> binding.editor.undo());
+        binding.floatActionAdd.setOnClickListener(v -> {
+            DialogUtils.showInputDialog(this,getString(R.string.create_article_text),
+                    userInput -> new ArticleCreateFragment(userInput).show(getSupportFragmentManager(), ""));
+
+        });
 
 
     }
@@ -382,5 +387,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    /**
+     * for article_create dialog
+     * in case of activity layout change when inputting in dialog;
+     */
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus){
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE|WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }else {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        }
+        super.onWindowFocusChanged(hasFocus);
+    }
+
+
 
 }

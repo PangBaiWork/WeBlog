@@ -9,4 +9,22 @@
   </style>
 
   <style name="AppTheme" parent="Base.AppTheme" />
+
+
+  <style name="ThemeOverlay.Catalog.BottomSheetDialog.Scrollable" parent="ThemeOverlay.Material3.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/Widget.Catalog.BottomSheet.Modal.Scrollable</item>
+    <item name="android:windowSoftInputMode">adjustPan</item>
+   <item name="colorAccent">?attr/colorPrimary</item>
+    <item name="colorPrimary">?attr/colorPrimary</item>
+  </style>
+
+  <style name="Widget.Catalog.BottomSheet.Modal.Scrollable" parent="Widget.Material3.BottomSheet.Modal">
+    <item name="paddingBottomSystemWindowInsets">false</item>
+
+  </style>
+
+  <style name="DialogAnim" parent="@android:style/Animation">
+    <item name="android:windowEnterAnimation">@anim/dialog_in</item>
+    <item name="android:windowExitAnimation">@anim/dialog_out</item>
+  </style>
 </resources>

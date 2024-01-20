@@ -14,4 +14,13 @@
     <string name="folder">Folder</string>
     <string name="notice_action_failed">operation failed</string>
     <string name="jump_to">Jump to</string>
+    <string name="create_article_text">Create new article: title</string>
+    <string name="copy_to">Copy to</string>
+    <string-array name="cat_textfield_exposed_dropdown_content" translatable="false">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+    </string-array>
+    <string name="create_article_btn">Create</string>
 </resources>
