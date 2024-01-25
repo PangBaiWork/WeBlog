@@ -14,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.internal.ViewUtils;
 import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
@@ -62,15 +64,20 @@ public  class  ArticleCreateFragment extends BottomSheetDialogFragment {
         return bottomSheetDialog;
     }
 
-    View.OnFocusChangeListener focus= (v, hasFocus) -> {
-        if (hasFocus){
-            behavior.setState(behavior.STATE_EXPANDED);
-        }
-    };
+
+
+
 
    void setLayout( ){
         binding.articleTitle.setText(title);
+        TagManager tagManager=new TagManager(binding.articleTagGroup);
+        tagManager.initChipGroup();
+        binding.articleTagAdd.setOnClickListener(v ->{
+           tagManager.addTag(binding.articleTagInput.getText().toString());
+        binding.articleTagInput.setText(null);});
       //  binding.articleTitle.setOnFocusChangeListener(focus);
    }
+
+
 
 }

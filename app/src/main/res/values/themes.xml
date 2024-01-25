@@ -3,7 +3,9 @@
   <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
     <item name="android:statusBarColor">?android:attr/colorBackground</item>
     <item name="android:navigationBarColor">?android:attr/colorBackground</item>
-
+    <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_background</item>
+    <item name="android:windowLightStatusBar">true</item>
+  <!--  <item name="shapeCornerFamily">cut</item>-->
        <!-- Customize your theme here. -->
     <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
   </style>
@@ -14,8 +16,7 @@
   <style name="ThemeOverlay.Catalog.BottomSheetDialog.Scrollable" parent="ThemeOverlay.Material3.BottomSheetDialog">
     <item name="bottomSheetStyle">@style/Widget.Catalog.BottomSheet.Modal.Scrollable</item>
     <item name="android:windowSoftInputMode">adjustPan</item>
-   <item name="colorAccent">?attr/colorPrimary</item>
-    <item name="colorPrimary">?attr/colorPrimary</item>
+
   </style>
 
   <style name="Widget.Catalog.BottomSheet.Modal.Scrollable" parent="Widget.Material3.BottomSheet.Modal">

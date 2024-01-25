@@ -88,7 +88,7 @@ public class IO {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(md))) {
             String line;
             int position = 0;
-            // only check 15 lines
+            // only check 15 linescomponent
             for (int i = 0; i < 15; i++) {
                 line = bufferedReader.readLine();
                 if (line == null)

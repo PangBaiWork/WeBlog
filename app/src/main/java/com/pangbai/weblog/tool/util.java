@@ -1,7 +1,10 @@
 package com.pangbai.weblog.tool;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,9 +25,25 @@ public class util {
         float scale = context.getResources().getDisplayMetrics().density;
         return dipValue * scale + 0.5f;
     }
+
+    public static void startActivity(Context ct, Class activity, boolean anim) {
+        Intent it = new Intent(ct.getApplicationContext(), activity);
+        if (anim) {
+            it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            it.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        if (ct instanceof Activity)
+            ct.startActivity(it, ActivityOptions.makeSceneTransitionAnimation((Activity) ct).toBundle());
+        else
+            ct.startActivity(it);
+    }
+
     public static void runOnUiThread(Runnable run){
             handler.post(run);
+    }
+    public static String[] getByEnv(String env){
 
+        return env.split("=",2);
     }
 
 

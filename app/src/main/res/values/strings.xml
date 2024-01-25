@@ -23,4 +23,11 @@
         <item>Item 4</item>
     </string-array>
     <string name="create_article_btn">Create</string>
+    <string name="create_tags">Create New Tag</string>
+    <string name="article_description">Article Description</string>
+    <string name="create_project">Create New Project</string>
+    <string name="open_project">Open Existing Project</string>
+    <string name="pull_project">Pull Remote Project</string>
+    <string name="open_terminal">Open Terminal</string>
+    <string name="notice" translatable="false">No matter where We called home</string>
 </resources>

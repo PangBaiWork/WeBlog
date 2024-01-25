@@ -16,4 +16,10 @@
     <string name="create_article_text">创建新文章: 标题</string>
     <string name="copy_to">复制到</string>
     <string name="create_article_btn">创建</string>
+    <string name="create_tags">创建新标签</string>
+    <string name="article_description">文章描述</string>
+    <string name="create_project">新建项目</string>
+    <string name="open_project">打开项目</string>
+    <string name="pull_project">拉取项目</string>
+    <string name="open_terminal">打开终端</string>
 </resources>

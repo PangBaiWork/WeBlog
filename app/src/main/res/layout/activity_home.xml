@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/ic_launcher_background"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="WeBlog"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content">
+
+        </TextView>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:minWidth="230dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_add"
+        android:text="@string/create_project"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_marginTop="12dp"
+            android:minWidth="230dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_open"
+            android:text="@string/open_project"/>
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_marginTop="12dp"
+            android:minWidth="230dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_git"
+            android:text="@string/pull_project"/>
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:layout_marginTop="12dp"
+        android:minWidth="230dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_terminal"
+        android:text="@string/open_terminal"/>
+    <LinearLayout
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="35dp"
+            android:background="@drawable/ic_setting"/>
+        <FrameLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ic_heart"/>
+        <FrameLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@drawable/ic_github"/>
+    </LinearLayout>
+    <TextView
+        android:layout_marginTop="30dp"
+        android:text="@string/notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+</LinearLayout>

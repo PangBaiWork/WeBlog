@@ -1,6 +1,8 @@
 
-package com.pangbai.weblog;
+package com.pangbai.weblog.activity;
 
+
+import static com.pangbai.weblog.execute.cmdExer.envp;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -33,14 +35,17 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import com.pangbai.terminal.view.SuperTerminalView;
+import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.editor.TextMate;
 import com.pangbai.weblog.global.ThemeUtil;
+import com.pangbai.weblog.preference.PrefManager;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.tool.permission;
 
+import com.pangbai.weblog.tool.util;
 import com.pangbai.weblog.view.ArticleCreateFragment;
 import com.pangbai.weblog.view.FilesListAdapter;
 import com.pangbai.weblog.view.MainViewPagerAdapter;
@@ -76,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PrefManager.init(getApplicationContext());
+       if (!PrefManager.isFirstLaunch()){
+           util.startActivity(this, HomeActivity.class,false);
+           finish();
+           return;
+       }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setLayout();
         setContentView(binding.getRoot());
@@ -101,28 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
     void setTerminal() {
         String[] n = {"sh"};
-        String[] envp = {
-                //"PATH=" + "/system/bin"
-                "PATH=" + Init.binDir + ":/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/vendor/bin",
-                "HOME=" + Init.filesDirPath,
-                "PREFIX=" + Init.filesDirPath + "/usr",
-                "LD_LIBRARY_PATH=" + Init.filesDirPath + "/usr/lib",
-                "PS1=\\[\\e[1\\;31m\\])➜ \\[\\e[1;36m\\]\\W\\[\\e[m\\] ",
-                "TERM=xterm-256color",
-                "LANG=en_US.UTF-8",
-                "ANDROID_DATA=/data",
-                "ANDROID_ROOT=/system",
-                "LD_PRELOAD=" + Init.libDir + "/libexec"
-        };
-
-
         String path = getApplicationInfo().nativeLibraryDir;
         //   Log.e("weblog",path);
         cmdView.setProcess(path + "/busybox", getFilesDir().getAbsolutePath(), n, envp, 0);
         cmdView.runProcess();
-        cmdView.requestFocus();
-
-
+        //cmdView.requestFocus();
     }
 
     void setEditor() {
