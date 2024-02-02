@@ -2,9 +2,9 @@
 package com.pangbai.weblog.activity;
 
 
-import static com.pangbai.weblog.execute.cmdExer.envp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +37,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.pangbai.terminal.view.SuperTerminalView;
 import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
+import com.pangbai.weblog.databinding.FileListBinding;
+import com.pangbai.weblog.databinding.LayoutTerminalBinding;
 import com.pangbai.weblog.editor.TextMate;
 import com.pangbai.weblog.global.ThemeUtil;
 import com.pangbai.weblog.preference.PrefManager;
@@ -72,27 +74,34 @@ import io.github.rosemoe.sora.widget.SymbolInputView;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
-    SuperTerminalView cmdView;
+    LayoutTerminalBinding cmdView,cmdBinding;
     MarkdownView markdown;
     Content editorText;
     File currentFile;
+    String projectPath;
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PrefManager.init(getApplicationContext());
+        new Init(this);
        if (!PrefManager.isFirstLaunch()){
            util.startActivity(this, HomeActivity.class,false);
            finish();
            return;
        }
 
+      Intent intent= getIntent();
+        if (intent != null) {
+            projectPath=intent.getStringExtra("project_path");
+        }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setLayout();
         setContentView(binding.getRoot());
 
-        new Init(this);
+
         new permission(this).checkPermission();
 
 
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         //  binding.markdownView.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
         // binding.markdownView.loadMarkdownFromUrl("url");
         setTabLayout();
-        setTerminal();
+
         setEditor();
         setCodeText(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
 
@@ -111,14 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    void setTerminal() {
-        String[] n = {"sh"};
-        String path = getApplicationInfo().nativeLibraryDir;
-        //   Log.e("weblog",path);
-        cmdView.setProcess(path + "/busybox", getFilesDir().getAbsolutePath(), n, envp, 0);
-        cmdView.runProcess();
-        //cmdView.requestFocus();
-    }
+
 
     void setEditor() {
         binding.editor.setCursorAnimationEnabled(false);
@@ -245,14 +247,14 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     void setRecycleView() {
-
+        FileListBinding include_binding= binding.include;
         FilesListAdapter mAdapter = new FilesListAdapter(
-                binding.drawerCurrentPath,
+                include_binding.filelistCurrentPath,
                 file -> {
                     // binding.markdownView.loadMarkdownFromFile(file);
                     if (file.getName().endsWith(".md")) {
                         String subtitle = IO.getMdTitle(file);
-                        binding.toolbar.setSubtitle(subtitle == null ? file.getName() : subtitle);
+                       binding.toolbar.setSubtitle(subtitle == null ? file.getName() : subtitle);
                     } else {
                         binding.toolbar.setSubtitle("Blog Name");
                     }
@@ -262,43 +264,13 @@ public class MainActivity extends AppCompatActivity {
 
                 }
               );
-        binding.recycleviewFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
-        binding.recycleviewFiles.setAdapter(mAdapter);
-        binding.recycleviewFiles.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
-        binding.drawerFloatActionHome.setOnClickListener(v -> {
-            mAdapter.setList(new File("/storage/emulated/0/blog/source/_posts/IT/"));
-         //   binding.recycleFiles.scheduleLayoutAnimation();
-
-        });
-        binding.drawerCurrentPath.setOnClickListener(v -> {
-            DialogUtils.showInputDialog(this,getString(R.string.jump_to),userInput -> mAdapter.setList(new File(userInput)));
-        });
-        binding.drawerFloatActionAdd.setOnClickListener(v -> {
-            String prefix=  mAdapter.getCurrentDir()+"/";
-            DialogUtils.showInputDialog(this,getString(R.string.create_file) ,
-                    new String[]{getString(R.string.folder),getString(R.string.file)},
-                    userInput->{
-                      if (IO.createFileOrDir(prefix+userInput,true)){
-                          mAdapter.setList(new File(prefix+userInput));
-                      }else {
-                          Snackbar.make(binding.recycleviewFiles,getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
-                      }
-                    },
-                    userInput -> {
-                        if (IO.createFileOrDir(prefix+userInput,false)){
-                            mAdapter.setList(mAdapter.mCurrentfile);
-                        }else {
-                            Snackbar.make(binding.recycleviewFiles,getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-
-        });
-
-        binding.drawerFloatActionParents.setOnClickListener(v -> {
-            mAdapter.setList(Objects.requireNonNull(mAdapter.mCurrentfile.getParentFile()));
-        //    binding.recycleFiles.scheduleLayoutAnimation();
-        });
+        include_binding.recycleviewFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
+        include_binding.recycleviewFiles.setAdapter(mAdapter);
+        include_binding.recycleviewFiles.setLayoutManager(new LinearLayoutManager(this));
+        String path;
+        path=projectPath==null?"/storage/emulated/0/blog/source/_posts/IT/":projectPath;
+        mAdapter.showFileList(path,null);
+        mAdapter.setActionButton(include_binding);
 
     }
 
@@ -309,20 +281,27 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewpager);
         List<View> views = new ArrayList<>();
 
-        cmdView = new SuperTerminalView(this, null);
+      /*  cmdView = new SuperTerminalView(this, null);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.height = 400;
         params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-        cmdView.setLayoutParams(params);
-        cmdView.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
+        cmdView.setLayoutParams(params);*/
+        cmdBinding=LayoutTerminalBinding.inflate(getLayoutInflater());
+        cmdBinding.terminalBg.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
+        cmdBinding.ExtraKey.addView(cmdBinding.terminal.createKeyView());
+        cmdBinding.ExtraKey.setBackgroundColor(Color.WHITE);
+        cmdBinding.terminal.setTerminal(Init.filesDirPath);
 
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.height = 400;
+        params.width = LinearLayout.LayoutParams.MATCH_PARENT;
         markdown = new MarkdownView(this);
         markdown.setLayoutParams(params);
 
 
 
         views.add(markdown);
-        views.add(cmdView);
+        views.add(cmdBinding.getRoot());
         //views.add(articalList);
         markdown.addStyleSheet(new Github());
         markdown.loadMarkdownFromFile(new File("/storage/emulated/0/blog/source/_posts/IT/re2.md"));
@@ -348,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                 // focus on cmdview;
                 if (newState==BottomSheetBehavior.STATE_EXPANDED){
                     if (tabLayout.getSelectedTabPosition()==1){
-                        cmdView.requestFocus();
+                        cmdBinding.terminal.requestFocus();
                     }
                 }
             }
@@ -365,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 // focus on cmdview;
                 if (tab.getPosition()==1){
-                    cmdView.requestFocus();
+                   cmdBinding.terminal.requestFocus();
                 }
             }
 

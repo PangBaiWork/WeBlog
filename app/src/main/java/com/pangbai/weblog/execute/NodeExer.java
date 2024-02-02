@@ -2,7 +2,7 @@ package com.pangbai.weblog.execute;
 
 public class NodeExer {
 
-   public  void  setProjectPath(String path){
+   public  static void   setProjectPath(String path){
        cmdExer.setCwd(path);
    }
     public static  boolean installComponent(String component,boolean isGlobal){
@@ -10,7 +10,12 @@ public class NodeExer {
       return cmdExer.execute("npm install"+(isGlobal?flag:" ")+component,false)==0;
     }
 
+    public static boolean changeConfig(String key,String value){
+       return cmdExer.execute("hexo config "+key+" "+value,false)==0;
+    }
+
     public static boolean initBlog(String path){
+       if (path==null)path="";
         return cmdExer.execute("hexo init "+path,false)==0;
     }
     public static boolean hexoGenerate(){

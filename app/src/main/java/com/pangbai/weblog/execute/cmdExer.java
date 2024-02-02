@@ -4,6 +4,7 @@ package com.pangbai.weblog.execute;
 import static com.pangbai.weblog.tool.util.getByEnv;
 
 import android.system.Os;
+import android.util.Log;
 
 import com.pangbai.weblog.tool.Init;
 
@@ -16,20 +17,8 @@ import java.util.Map;
 public class cmdExer {
     public static Process process;
     public static String result;
-    static String cwd, lastLine;
-    public static String[] envp = {
-            //"PATH=" + "/system/bin"
-            "PATH=" + Init.binDir + ":/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/vendor/bin",
-            "LD_PRELOAD=" + Init.libDir + "/libexec",
-            "HOME=" + Init.filesDirPath,
-            "PREFIX=" + Init.filesDirPath + "/usr",
-            "LD_LIBRARY_PATH=" + Init.filesDirPath + "/usr/lib",
-            "PS1=\\[\\e[1\\;31m\\])➜ \\[\\e[1;36m\\]\\W\\[\\e[m\\] ",
-            "TERM=xterm-256color",
-            "LANG=en_US.UTF-8",
-            "ANDROID_DATA=/data",
-            "ANDROID_ROOT=/system"
-    };
+    static String cwd=Init.sdcardPath, lastLine;
+
 
     public static int execute(String command, boolean su) {
         return execute(command, su, true);
@@ -47,11 +36,10 @@ public class cmdExer {
         Map<String, String> environment = processBuilder.environment();
         if (cwd!=null)
             processBuilder.directory(new File(cwd));
-        String tmp[] = getByEnv(envp[0]);
-        processBuilder.environment().put(tmp[0], tmp[1]);
-        tmp = getByEnv(envp[1]);
-
-        processBuilder.environment().put(tmp[0], tmp[1]);
+        for (String env:Init.envp) {
+            String tmp[] = getByEnv(env);
+            processBuilder.environment().put(tmp[0], tmp[1]);
+        }
 
         // 设置环境变量
         // environment.put("LD_LIBRARY_PATH", Init.filesDirPath + "/usr/lib");
@@ -68,8 +56,8 @@ public class cmdExer {
             while ((line = reader.readLine()) != null) {
 
 
-                System.out.println(line);
-                result += line;
+                Log.e("exer",line);
+               result += line;
                 lastLine = line;
             }
 

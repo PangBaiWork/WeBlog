@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/drawer_right_bg"
+    android:paddingStart="25dp"
+    android:paddingTop="28dp"
+    android:layout_gravity="end"
+    tools:ignore="RtlSymmetry">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:textStyle="bold"
+        android:id="@+id/filelist_current_path" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/filelist_current_path"
+        android:layout_gravity="fill_vertical"
+        android:layout_width="match_parent"
+        android:id="@+id/recycleview_files"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical"
+
+        android:layout_marginBottom="50dp">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/drawer_float_action_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            style="?attr/floatingActionButtonStyle"
+            app:useCompatPadding="true"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/drawer_float_action_parents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:useCompatPadding="true"
+            android:src="@drawable/ic_file_previous" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/drawer_float_action_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:useCompatPadding="true"
+            android:src="@drawable/ic_home" />
+
+    </LinearLayout>
+</RelativeLayout>

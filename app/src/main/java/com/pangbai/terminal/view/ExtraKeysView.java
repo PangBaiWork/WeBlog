@@ -3,20 +3,34 @@ package com.pangbai.terminal.view;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.pangbai.terminal.TerminalSession;
+import com.pangbai.weblog.tool.Init;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,14 +41,63 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ExtraKeysView extends GridLayout {
 
-    private static final int TEXT_COLOR = 0xFFFFFFFF;
+    private static final int TEXT_COLOR = 0xff000000;
     private static final int BUTTON_COLOR = 0x00000000;
     private static final int INTERESTING_COLOR = 0xFF80DEEA;
     private static final int BUTTON_PRESSED_COLOR = 0x7FFFFFFF;
     public  TerminalView terminalView=null ;
+    String [][] mExtraKeys;
     public ExtraKeysView(Context context, TerminalView terminalView) {
         super(context);
 		this.terminalView=terminalView;
+    }
+
+    public void readkeys() {
+
+        File propsFile = new File(Init.keyPath);
+        if (!propsFile.exists())
+            Log.e("terminal key","keys not found");
+           // Toast.makeText(getContext(), "keys not found", Toast.LENGTH_LONG).show();
+
+        Properties props = new Properties();
+        try {
+            if (propsFile.isFile() && propsFile.canRead()) {
+                try (FileInputStream in = new FileInputStream(propsFile)) {
+                    props.load(new InputStreamReader(in, StandardCharsets.UTF_8));
+                }
+            }
+        } catch (IOException e) {
+        }
+      //  String[][]  mExtraKeys;
+
+        try {
+
+            JSONArray arr = new JSONArray(props.getProperty("extra-keys", "[['ESC', 'TAB', 'CTRL', 'ALT', '-', 'DOWN', 'UP']]"));
+
+            // JSONArray arr = new JSONArray(props.getProperty("extra-keys"," ['ESC','<','>','BACKSLASH','=','^','$','()','{}','[]','ENTER'], \ ['TAB','&',';','/','~','%','*','HOME','UP','END','PGUP'], \ ['CTRL','FN','ALT','|','-','+','QUOTE','LEFT','DOWN','RIGHT','PGDN'] \ ]"));
+         mExtraKeys = new String[arr.length()][];
+            for (int i = 0; i < arr.length(); i++) {
+                JSONArray line = arr.getJSONArray(i);
+                mExtraKeys[i] = new String[line.length()];
+                for (int j = 0; j < line.length(); j++) {
+                    mExtraKeys[i][j] = line.getString(j);
+                }
+            }
+        } catch (JSONException e) {
+            Toast.makeText(getContext(), "Could not load the extra-keys property from the config: " + e.toString(), Toast.LENGTH_LONG).show();
+            // Log.e("termux", "Error loading props", e);
+            mExtraKeys = new String[0][];
+        }
+    }
+
+    void  setLayout(){
+        readkeys();
+        ViewGroup.LayoutParams lp =new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.height = (int) ((37.5 * mExtraKeys.length) * getResources().getDisplayMetrics().density + 0.5);
+        lp.width = -1;
+        Log.e("term", "" + lp.height);
+        setLayoutParams(lp);
+        reload(mExtraKeys, ExtraKeysView.defaultCharDisplay);
     }
     
     /**

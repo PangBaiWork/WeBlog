@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -53,28 +54,25 @@ public class DialogUtils {
         alertDialog.show();
     }
 
-    /*
+    public static AlertDialog showLoadingDialog(Context context){
+        return showCustomLayoutDialog(context,context.getString(R.string.loading),R.layout.dialog_loading);
+    }
 
-    public static Dialog showCustomLayoutDialog(Context context,String title, int layoutResId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
+    public static AlertDialog showCustomLayoutDialog(Context context,String title, int layoutResId) {
         // Inflate custom layout
-        View view=LayoutInflater.from(context).inflate(layoutResId,null);
-            TextView text= view.findViewById(R.id.dialog_title);
-        if (title!=null&&text!=null)
-            text.setText(title);
-
-        builder.setView(view);
-
-
+        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(layoutResId, null);
+        builder.setView(dialogView)
+                .setTitle(title);
         AlertDialog alertDialog = builder.create();
         alertDialog.setCanceledOnTouchOutside(false); // Prevent dismiss on outside touch
-
         alertDialog.show();
         return alertDialog;
     }
 
-     */
+
     public static void showInputDialog(Context context, String title,String text,final DialogInputListener pos){
         EditText editText=  showInputDialog(context,title,new String[]{"确定","取消"},pos,null).findViewById(R.id.dialog_text_input);
         if (editText != null) {
@@ -82,8 +80,8 @@ public class DialogUtils {
             editText.setSelection(text.length());
         }
     }
-    public static void showInputDialog(Context context, String title,final DialogInputListener pos){
-        showInputDialog(context,title,new String[]{context.getString(R.string.confirm),context.getString(R.string.cancle)},pos,null);
+    public static AlertDialog showInputDialog(Context context, String title,final DialogInputListener pos){
+       return showInputDialog(context,title,new String[]{context.getString(R.string.confirm),context.getString(R.string.cancle)},pos,null);
     }
 
     public static AlertDialog showInputDialog(Context context, String title,String[] button,final DialogInputListener pos,final DialogInputListener neg) {

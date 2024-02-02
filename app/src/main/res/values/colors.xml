@@ -1,6 +1,7 @@
 
 <resources>
-    <color name="colorSurface">?attr/colorSurface</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
     <color name="seed">#6750A4</color>
     <color name="md_theme_light_primary">#6750A4</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

@@ -10,28 +10,38 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 
 
 //import com.pangbai.dowork.service.mainService;
+import androidx.viewpager.widget.ViewPager;
+
 import com.pangbai.terminal.TerminalSession;
 import com.pangbai.terminal.TerminalSessionClient;
+import com.pangbai.weblog.tool.Init;
+
+import br.tiagohm.markdownview.MarkdownView;
 
 
 public final class SuperTerminalView extends TerminalView {
 
-    public TerminalSession mTerminalSession = null;
+    public TerminalSession mTerminalSession ;
     ClipboardManager clipboardManager;
-    ClipData clipData;
+   // ClipData clipData;
     // Terminal
-   // private ExtraKeysView mkeys;
+    private ExtraKeysView mkeys;
 
-    public  SuperTerminalView terminal = null;
-    public TerminalSessionClient mTerminalSessionClient = null;
-    private TerminalViewClient mTerminalViewClient = null;
-    private boolean set_done = false;
-    private boolean run_done = false;
-    static int  currentsize=30;
+    public  SuperTerminalView terminal ;
+    public TerminalSessionClient mTerminalSessionClient;
+    private TerminalViewClient mTerminalViewClient;
+   // private boolean set_done = false;
+   // private boolean run_done = false;
+   // static int  currentsize=30;
     public int[] textSizes;
 
 
@@ -72,6 +82,20 @@ public final class SuperTerminalView extends TerminalView {
         setTextSize(textSizes[0]);
     }
 
+    public   void setTerminal(String cwd) {
+        String[] n = {"sh"};
+        //   Log.e("weblog",path);
+        setProcess(Init.busyboxPath, cwd, n, Init.envp, 0);
+        runProcess();
+        //cmdView.requestFocus();
+    }
+    public ExtraKeysView createKeyView(){
+        ExtraKeysView  keysView = new ExtraKeysView(getContext(), this);
+        setKeyView(keysView);
+        keysView.setLayout();
+        return keysView;
+    }
+
     public static int[] getDefaultFontSizes(Context context) {
         float dipInPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, context.getResources().getDisplayMetrics());
         int[] sizes = new int[3];
@@ -88,22 +112,61 @@ public final class SuperTerminalView extends TerminalView {
     }
 
     public boolean setProcess(String cmd, String cwd, String[] argv, String[] envp, int rows) {
-        if (set_done != false)
-            return false;
+
         mTerminalSession = new TerminalSession(cmd, cwd, argv, envp, rows, mTerminalSessionClient);
         return true;
+    }
+    public void setKeyView(ExtraKeysView keys){
+        this.mkeys=keys;
     }
 
 
     public boolean runProcess() {
-        if (run_done) {
-            return false;
-        }
+
         setTerminalViewClient(mTerminalViewClient);
         attachSession(mTerminalSession);
         return false;
     }
 
+    /** for Nested scrolling
+     *
+     * @param event The motion event.
+     * @return
+     */
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            ViewParent viewParent = findViewParentIfNeeds(this);
+            if (viewParent != null) {
+                viewParent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        if (clampedX) {
+            ViewParent viewParent = findViewParentIfNeeds(this);
+            if (viewParent != null) {
+                viewParent.requestDisallowInterceptTouchEvent(false);
+            }
+        }
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+    }
+
+    private ViewParent findViewParentIfNeeds(View tag) {
+        ViewParent parent = tag.getParent();
+        if (parent == null) {
+            return null;
+        }
+        if ( parent instanceof ScrollView || parent instanceof ViewPager || parent instanceof AbsListView ||parent instanceof HorizontalScrollView) {
+            return parent;
+        } else {
+            return parent;
+        }
+    }
     private class TSC implements TerminalSessionClient {
         @Override
         public void onColorsChanged(TerminalSession session) {
@@ -179,7 +242,22 @@ public final class SuperTerminalView extends TerminalView {
             return false;
         }
 
+        @Override
+        public boolean readControlKey() {
+            return (mkeys != null && mkeys.readSpecialButton(ExtraKeysView.SpecialButton.CTRL));
+        }
 
+        @Override
+        public boolean readAltKey() {
+            return (mkeys != null && mkeys.readSpecialButton(ExtraKeysView.SpecialButton.ALT));
+        }
+
+
+        @Override
+        public boolean readFnKey() {
+            return (mkeys != null &&mkeys.readSpecialButton(ExtraKeysView.SpecialButton.FN));
+
+        }
         @Override
         public boolean onKeyUp(int keyCode, KeyEvent e) {
             return false;

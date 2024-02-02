@@ -28,4 +28,7 @@
     <item name="android:windowEnterAnimation">@anim/dialog_in</item>
     <item name="android:windowExitAnimation">@anim/dialog_out</item>
   </style>
+  <style name="terminal_bottomsheet" parent="Widget.Material3.BottomSheet.Modal">
+    <item name="backgroundTint">?attr/colorPrimary</item>
+  </style>
 </resources>

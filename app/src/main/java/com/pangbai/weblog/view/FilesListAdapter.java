@@ -13,30 +13,44 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.pangbai.weblog.databinding.FileListBinding;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.R;
 import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.util;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     //  ArrayList <File> filesList;
     public File mCurrentfile;
+    public File mHomeFile;
     public File[] childFiles;
+    FileFilter fileFilter;
     private final OnFilesListClickCallBack mOnclick;
 
     ViewGroup parent;
     TextView pathView;
     Context context;
+  public   FileFilter filterDir=pathname -> pathname.isDirectory();
+  public   FileFilter filterMd=pathname -> pathname.getName().endsWith(".md");
 
 
     public FilesListAdapter(TextView pathView, OnFilesListClickCallBack mOnclick) {
         this.pathView = pathView;
         this.mOnclick = mOnclick;
 
+    }
+
+    public void showFileList(String home,FileFilter fileFilter){
+        if (home==null)return;
+        File file=new File(home);
+        this.mHomeFile=file;
+        this.fileFilter=fileFilter;
+        setList(file);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -55,7 +69,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
             if (targetFile.isDirectory()) {
                 setList(targetFile);
             } else if (targetFile.exists()) {
-                mOnclick.onClick(targetFile);
+                if (mOnclick!=null) mOnclick.onClick(targetFile);
             } else {
                 Snackbar.make(parent, "No File Found", Snackbar.LENGTH_SHORT).show();
             }
@@ -69,6 +83,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
             pop.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.file_action_delete) {
+                    Snackbar.make(parent, "Deleting files", Snackbar.LENGTH_SHORT).show();
                     new Thread() {
                         @Override
                         public void run() {
@@ -83,7 +98,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                     DialogUtils.showInputDialog(context,
                            context.getString(R.string.copy_to) , targetFile.getAbsolutePath(),
                             userInput -> {
-                                Snackbar.make(parent, "copying files", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(parent, "Dopying files", Snackbar.LENGTH_SHORT).show();
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -105,7 +120,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                     DialogUtils.showInputDialog(context,
                             context.getString(R.string.file_action_rename), targetFile.getAbsolutePath(),
                             userInput -> {
-                                Snackbar.make(parent, "moving files", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(parent, "Moving files", Snackbar.LENGTH_SHORT).show();
                                 new Thread() {
                                     @Override
                                     public void run() {
@@ -164,6 +179,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
         return mCurrentfile.getAbsolutePath();
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     public void setList(File files) {
         if (!files.exists() || !files.canRead()) {
@@ -174,7 +190,8 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
         }
 
         this.mCurrentfile = files;
-        this.childFiles = files.listFiles();
+
+        this.childFiles = files.listFiles(fileFilter);
         Arrays.sort(childFiles, (file1, file2) -> {
             if (file1.isDirectory() && !file2.isDirectory()) {
                 return -1; // 文件夹排在前面
@@ -193,6 +210,40 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
 
     }
 
+
+    public  void  setActionButton(FileListBinding binding){
+        binding.drawerFloatActionHome.setOnClickListener(v -> {
+          setList(mHomeFile);
+        });
+        binding.filelistCurrentPath.setOnClickListener(v -> {
+            DialogUtils.showInputDialog(context,context.getString(R.string.jump_to),userInput -> setList(new File(userInput)));
+        });
+        binding.drawerFloatActionAdd.setOnClickListener(v -> {
+            String prefix=  getCurrentDir()+"/";
+            DialogUtils.showInputDialog(context,context.getString(R.string.create_file) ,
+                    new String[]{context.getString(R.string.folder),context.getString(R.string.file)},
+                    userInput->{
+                        if (IO.createFileOrDir(prefix+userInput,true)){
+                         setList(new File(prefix+userInput));
+                        }else {
+                            Snackbar.make(binding.recycleviewFiles,context.getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
+                        }
+                    },
+                    userInput -> {
+                        if (IO.createFileOrDir(prefix+userInput,false)){
+                            setList(mCurrentfile);
+                        }else {
+                            Snackbar.make(binding.recycleviewFiles,context.getString(R.string.notice_action_failed),Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+        });
+
+        binding.drawerFloatActionParents.setOnClickListener(v -> {
+           setList(Objects.requireNonNull(mCurrentfile.getParentFile()));
+            //    binding.recycleFiles.scheduleLayoutAnimation();
+        });
+    }
 
     public interface OnFilesListClickCallBack {
         public void onClick(File file);
