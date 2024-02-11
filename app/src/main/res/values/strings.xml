@@ -16,11 +16,10 @@
     <string name="jump_to">Jump to</string>
     <string name="create_article_text">Create new article: title</string>
     <string name="copy_to">Copy to</string>
-    <string-array name="cat_textfield_exposed_dropdown_content" translatable="false">
-        <item>Item 1</item>
-        <item>Item 2</item>
-        <item>Item 3</item>
-        <item>Item 4</item>
+    <string-array name="default_tag_array">
+        <item>Daily Blog</item>
+        <item>Philosophy</item>
+        <item>IT</item>
     </string-array>
     <string name="create_article_btn">Create</string>
     <string name="create_tags">Create New Tag</string>
@@ -36,4 +35,19 @@
     <string name="loading">Loading</string>
     <string name="input_blog_title">Blog title</string>
     <string name="clone_git">Clone git repository</string>
+
+    <string-array name="default_category_array" translatable="false">
+        <item>Diary</item>
+        <item>IT</item>
+        <item>Science</item>
+
+    </string-array>
+    <string name="start_server">Start real-time preview port:</string>
+    <string name="scripts_list">Scripts list</string>
+    <string name="select_scripts">Select scripts to run</string>
+    <string name="executing">Executing</string>
+    <string name="how_to_open_terminal">Tips: Slide up from the bottom to open the terminal</string>
+    <string name="load_resources">Releasing resources</string>
+    <string name="sdcard_permisson">Sdcard Permisson application</string>
+    <string name="sdcard_description">Request for permission to read and write SD card data</string>
 </resources>

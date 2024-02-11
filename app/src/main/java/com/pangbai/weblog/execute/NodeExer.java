@@ -25,8 +25,9 @@ public class NodeExer {
         return cmdExer.execute("hexo d",false)==0;
     }
 
-    public static boolean hexoServer(boolean isStatic){
-        return cmdExer.execute("hexo s "+(isStatic?"-s":null),false)==0;
+    public static Process hexoServer(String port,boolean isStatic){
+        cmdExer.execute("hexo s"+(isStatic?" -s ":" ")+"-p "+port,false,false);
+        return cmdExer.getProcess();
     }
 
     public static  boolean hexoClean(){

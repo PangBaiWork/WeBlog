@@ -31,12 +31,12 @@ public class util {
     }
 
     public static void startActivity(Context ct, Class activity, boolean anim) {
-        Intent it = new Intent(ct.getApplicationContext(), activity);
+        Intent it = new Intent(ct, activity);
         if (anim) {
             it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             it.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         }
-        if (ct instanceof Activity)
+        if (ct instanceof Activity&&anim)
             ct.startActivity(it, ActivityOptions.makeSceneTransitionAnimation((Activity) ct).toBundle());
         else
             ct.startActivity(it);
@@ -54,7 +54,12 @@ public class util {
         return env.split("=",2);
     }
 
-
+    public static boolean  isStringExist(String s,String[] ss){
+        for (String str:ss){
+            if (s.equals(str))return true;
+        }
+        return false;
+    }
 
 
 }

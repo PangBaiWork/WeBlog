@@ -18,7 +18,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
 
-//import com.pangbai.dowork.service.mainService;
+//import com.pangbai.dowork.service.MainService;
 import androidx.viewpager.widget.ViewPager;
 
 import com.pangbai.terminal.TerminalSession;
@@ -43,6 +43,7 @@ public final class SuperTerminalView extends TerminalView {
    // private boolean run_done = false;
    // static int  currentsize=30;
     public int[] textSizes;
+
 
 
 /*
@@ -74,6 +75,7 @@ public final class SuperTerminalView extends TerminalView {
     public SuperTerminalView(Context context, AttributeSet attributes) {
         super(context, attributes);
         setFocusable(true);
+
         setFocusableInTouchMode(true);
         mTerminalSessionClient = new TSC();
         mTerminalViewClient = new TVC();
@@ -166,7 +168,16 @@ public final class SuperTerminalView extends TerminalView {
         } else {
             return parent;
         }
+
+
     }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mTerminalSession.finishIfRunning();
+        super.onDetachedFromWindow();
+    }
+
     private class TSC implements TerminalSessionClient {
         @Override
         public void onColorsChanged(TerminalSession session) {
@@ -195,11 +206,9 @@ public final class SuperTerminalView extends TerminalView {
 
         @Override
         public void onSessionFinished(TerminalSession finishedSession,int DelayTime) {
-            Handler mHander = new Handler(Looper.getMainLooper());
+
+
             /*mHander.postDelayed(() -> {
-                mTerminalSession = null;
-                 mTerminalSessionClient = null;
-                 mTerminalViewClient = null;
 
 
                  SuperTerminalView.this.setVisibility(GONE);

@@ -1,22 +1,28 @@
 package com.pangbai.weblog.tool;
 
+import android.Manifest;
 import android.app.Activity;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 
-import com.pangbai.weblog.execute.NodeExer;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+
+import com.pangbai.weblog.R;
 import com.pangbai.weblog.execute.cmdExer;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+
+import br.tiagohm.markdownview.Utils;
 
 public class Init {
 
@@ -29,8 +35,8 @@ public class Init {
 
     public static String busyboxPath, shPath;
     public static String[] envp;
-   final   public  static String sdcardPath="/storage/emulated/0/";
-   public static String keyPath;
+    final public static String sdcardPath = "/storage/emulated/0/";
+    public static String keyPath;
 
     public Init(Activity ct) {
 
@@ -43,7 +49,7 @@ public class Init {
         shPath = binDir + "/sh";
         nodeDir = binDir + "/node";
         weblogDir = filesDirPath + "/weblog";
-        keyPath=filesDirPath+"/weblog/keys";
+        keyPath = filesDirPath + "/weblog/keys";
         String[] envp = {
                 //"PATH=" + "/system/bin"
                 "PATH=" + Init.binDir + ":/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/vendor/bin",
@@ -61,20 +67,27 @@ public class Init {
         this.envp = envp;
 
 
+
         if (!new File(binDir).exists()) {
-            Toast.makeText(ct, "Loading", Toast.LENGTH_LONG).show();
+            AlertDialog dialog = DialogUtils.showLoadingDialog(ct, ct.getString(R.string.load_resources));
+
             new Thread() {
                 @Override
                 public void run() {
                     cmdExer.execute(libDir + "/links.sh " + libDir, false, true);
                     cmdExer.execute(busyboxPath + " tar Jxf " + libDir + "/env -C /", false, true);
-
                     cmdExer.execute(busyboxPath + " --install -s " + binDir, false, true);
-                    cmdExer.execute("npm config set registry http://mirrors.cloud.tencent.com/npm/", false);
-                    cmdExer.execute("npm install -g hexo-cli", false);
-                    // mdialog.dismiss();
-                    // util.ensureStoragePermissionGranted(ct);
+                    util.runOnUiThread(() -> {
+                        dialog.setTitle("Installing hexo");
+                    });
 
+                    cmdExer.execute("npm config set registry http://mirrors.cloud.tencent.com/npm/", false);
+                    boolean result = cmdExer.execute("npm install -g hexo-cli", false) == 0;
+                    dialog.dismiss();
+                    util.runOnUiThread(() -> {
+                        Toast.makeText(ct, result ? "Success" : "Failed", Toast.LENGTH_SHORT).show();
+                        checkPermission(ct);
+                    });
 
                 }
             }.start();
@@ -94,6 +107,51 @@ public class Init {
         int result = cmdExer.execute("[ -e " + link + " ] && " + "[ -L " + link + " ]", false, true);
         return result == 0;
     }
+
+
+    private AlertDialog dialog;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    public void checkPermission(Activity ct) {
+        //检查权限（NEED_PERMISSION）是否被授权 PackageManager.PERMISSION_GRANTED表示同意授权
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                    dialog = null;
+                }
+                dialog = DialogUtils.showConfirmationDialog(ct, ct.getString(R.string.sdcard_permisson),
+                        ct.getString(R.string.sdcard_description), () -> {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            intent.setData(Uri.parse("package:" + ct.getPackageName()));
+                            ct.startActivity(intent);
+                        },null);
+
+            } else {
+                //   havePermission = true;
+                Log.i("swyLog", "Android 11以上，当前已有权限");
+            }
+        } else {
+            if (ActivityCompat.checkSelfPermission(ct, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                //申请权限
+                if (dialog != null) {
+                    dialog.dismiss();
+                    dialog = null;
+                }
+                dialog = DialogUtils.showConfirmationDialog(ct, ct.getString(R.string.sdcard_permisson),
+                        ct.getString(R.string.sdcard_description), () -> {
+                            ActivityCompat.requestPermissions(ct, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+                        },null);
+            } else {
+                // havePermission = true;
+                Log.i("swyLog", "Android 6.0以上，11以下，当前已有权限");
+            }
+        }
+    }
+
 
 
 }

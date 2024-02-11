@@ -16,7 +16,7 @@
         <LinearLayout
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@drawable/ic_launcher_background"/>
+            android:background="@drawable/ic_app1"/>
         <TextView
             android:layout_width="wrap_content"
             android:text="WeBlog"

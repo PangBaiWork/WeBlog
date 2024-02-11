@@ -15,6 +15,11 @@
     <string name="jump_to">跳转到</string>
     <string name="create_article_text">创建新文章: 标题</string>
     <string name="copy_to">复制到</string>
+    <string-array name="default_tag_array">
+    <item>博客日常</item>
+    <item>哲学</item>
+    <item>IT</item>
+    </string-array>
     <string name="create_article_btn">创建</string>
     <string name="create_tags">创建新标签</string>
     <string name="article_description">文章描述</string>
@@ -27,4 +32,12 @@
     <string name="loading">加载中</string>
     <string name="input_blog_title">BLOG名称</string>
     <string name="clone_git">克隆GIT仓库</string>
+    <string name="start_server">"启动实时预览端口: "</string>
+    <string name="scripts_list">脚本列表</string>
+    <string name="select_scripts">运行脚本</string>
+    <string name="executing">执行中</string>
+    <string name="how_to_open_terminal" >提示: 从底部上滑可打开终端</string>
+    <string name="load_resources">加载资源</string>
+    <string name="sdcard_permisson">外部存储权限申请</string>
+    <string name="sdcard_description">读写外部数据的权限申请</string>
 </resources>

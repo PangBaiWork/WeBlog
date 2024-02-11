@@ -22,7 +22,7 @@ import io.github.rosemoe.sora.widget.CodeEditor;
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
 
 public class TextMate {
-    public static void  initializeLogic(CodeEditor editor,Context context) throws Exception {
+    public static void  initializeLogic(CodeEditor editor,Context context) {
         FileProviderRegistry.getInstance().addFileProvider(new AssetsFileResolver(context.getAssets()));
         try {
             GrammarRegistry.getInstance().loadGrammars("textmate/languages.json");
@@ -36,7 +36,7 @@ public class TextMate {
                     FileProviderRegistry.getInstance().tryGetInputStream("textmate/quietlight.json"),"textmate/quietlight.json" ,null);
             ThemeRegistry.getInstance().setTheme(new ThemeModel(themeSource));
             editor.setColorScheme(TextMateColorScheme.create(ThemeRegistry.getInstance()));
-            TextMate.setLanguage(editor,"main.md");
+          //  TextMate.setLanguage(editor,"main.md");
 
            /* Language language = TextMateLanguage.create("text.html.markdown",
                     false);

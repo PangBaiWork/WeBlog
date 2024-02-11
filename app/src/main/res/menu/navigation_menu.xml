@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/main_item"
+        android:title="Project">
+        <menu>
+
+
+            <item
+                android:id="@+id/project_server"
+                android:icon="@drawable/ic_server"
+                android:title="Live Preview"
+                android:checkable="true"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/project_script"
+                android:icon="@drawable/ic_script"
+                android:title="Script Manager"
+                android:checkable="true"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/project_close"
+                android:icon="@drawable/ic_close"
+                android:title="Close Project"
+                android:checkable="true"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/labels_item"
+        android:title="Global">
+        <menu>
+            <item
+                android:id="@+id/global_env"
+                android:icon="@drawable/ic_environment"
+                android:title="Environment"
+                android:checkable="true"
+                app:showAsAction="ifRoom"/>
+            <item
+                android:id="@+id/global_setting"
+                android:icon="@drawable/ic_setting"
+                android:title="Setting"
+                android:checkable="true"
+                app:showAsAction="ifRoom"/>
+
+        </menu>
+    </item>
+</menu>

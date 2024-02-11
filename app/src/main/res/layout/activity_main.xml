@@ -25,7 +25,7 @@
         android:id="@+id/progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
+        android:indeterminate="false"
         app:layout_anchor="@+id/toolbar"
         app:layout_anchorGravity="bottom|center" />
 
@@ -35,36 +35,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <!--
-        <br.tiagohm.markdownview.MarkdownView
-            android:id="@+id/markdown_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="MissingClass" /> -->
-        <!-- <androidx.compose.ui.platform.ComposeView
-            android:gravity="top|left"
-            android:id="@+id/compose_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />-->
-
-      <!--  <ScrollView
-            android:layout_width="match_parent"
-            android:layout_marginBottom="50dp"
-            android:layout_height="match_parent">
-        <com.pangbai.weblog.editor.EditView1
-            android:id="@+id/editor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:gravity="top|left"
-            android:inputType="textMultiLine"
-            android:overScrollMode="always"
-            android:text="**text**" />-->
-     <!--   <com.pangbai.weblog.editor.CodeEditor
-            android:id="@+id/editor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
--->
         <io.github.rosemoe.sora.widget.CodeEditor
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -142,8 +112,10 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
+        app:itemHorizontalPadding="40dp"
         app:headerLayout="@layout/activity_header"
-        app:menu="@menu/main_activity_menu"/>
+        app:itemTextAppearanceActiveBoldEnabled="true"
+        app:menu="@menu/navigation_menu"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

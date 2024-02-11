@@ -180,6 +180,9 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     }
 
 
+    public void refreshList(){
+        setList(mCurrentfile);
+    }
     @SuppressLint("NotifyDataSetChanged")
     public void setList(File files) {
         if (!files.exists() || !files.canRead()) {
@@ -246,7 +249,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     }
 
     public interface OnFilesListClickCallBack {
-        public void onClick(File file);
+        void onClick(File file);
     }
 
 

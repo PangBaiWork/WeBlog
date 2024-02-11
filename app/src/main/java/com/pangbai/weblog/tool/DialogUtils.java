@@ -2,15 +2,20 @@ package com.pangbai.weblog.tool;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.pangbai.weblog.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DialogUtils {
@@ -24,38 +29,69 @@ public class DialogUtils {
     public interface DialogInputListener {
         void onConfirm(String userInput);
     }
+    public interface OnSelectListener {
+        void select(List<String> selects);
+    }
+    public static AlertDialog showConfirmationDialog(Context context, String title, String message,
+                                              final OnPositiveClickListener positiveClickListener,final OnNegativeClickListener negativeClickListener){
+       return  showConfirmationDialog(context,title,message,context.getString(R.string.confirm),context.getString(R.string.cancle),positiveClickListener,negativeClickListener);
+    }
 
-
-    public static void showConfirmationDialog(Context context, String title, String message,
+    public static AlertDialog showConfirmationDialog(Context context, String title, String message,
                                               String positiveButtonText, String negativeButtonText,
                                               final OnPositiveClickListener positiveClickListener,final OnNegativeClickListener negativeClickListener) {
         MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
         builder.setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (positiveClickListener != null) {
-                            positiveClickListener.onPositiveButtonClick();
-                        }
+                .setPositiveButton(positiveButtonText, (dialogInterface, i) -> {
+                    if (positiveClickListener != null) {
+                        positiveClickListener.onPositiveButtonClick();
                     }
                 })
-                .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (negativeClickListener != null) {
-                            negativeClickListener.onNegativeButtonClick();
-                        }
-                      //  dialogInterface.dismiss();
+                .setNegativeButton(negativeButtonText, (dialogInterface, i) -> {
+                    if (negativeClickListener != null) {
+                        negativeClickListener.onNegativeButtonClick();
                     }
+                  //  dialogInterface.dismiss();
                 });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        return alertDialog;
+    }
+    public static AlertDialog showSelectDialog(Context context,String title,String[] choices,OnSelectListener callback) {
+            return showSelectDialog(context,title,choices,new boolean[choices.length],callback);
+    }
+
+    public static AlertDialog showSelectDialog(Context context,String title,String[] choices,boolean[] choicesInitial,OnSelectListener callback){
+      return   new MaterialAlertDialogBuilder(context)
+                .setTitle(title)
+                .setPositiveButton(
+                        context.getString(R.string.confirm),
+                        (DialogInterface dialog, int which) -> {
+                            SparseBooleanArray checkedItemPositions =
+                                    ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                            List<String> result = new ArrayList<>();
+                            for (int i = 0; i < choices.length; i++) {
+                                if (checkedItemPositions.get(i)) {
+                                    result.add(choices[i]);
+                                }
+                            }
+                            callback.select(result);
+                          //  Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
+                        })
+                .setNegativeButton(context.getString(R.string.cancle), null)
+                .setMultiChoiceItems(choices, choicesInitial, null)
+                .show();
     }
 
     public static AlertDialog showLoadingDialog(Context context){
-        return showCustomLayoutDialog(context,context.getString(R.string.loading),R.layout.dialog_loading);
+        return showLoadingDialog(context,null);
+    }
+
+    public static AlertDialog showLoadingDialog(Context context,String title){
+        if (title==null)title=context.getString(R.string.loading);
+        return showCustomLayoutDialog(context,title,R.layout.dialog_loading);
     }
 
 
@@ -67,6 +103,7 @@ public class DialogUtils {
         builder.setView(dialogView)
                 .setTitle(title);
         AlertDialog alertDialog = builder.create();
+
         alertDialog.setCanceledOnTouchOutside(false); // Prevent dismiss on outside touch
         alertDialog.show();
         return alertDialog;

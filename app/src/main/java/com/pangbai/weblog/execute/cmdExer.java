@@ -12,17 +12,31 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 public class cmdExer {
     public static Process process;
     public static String result;
-    static String cwd=Init.sdcardPath, lastLine;
+    static String cwd = Init.sdcardPath, lastLine;
+
+    public static int executeScripts(List<String> name, String path, boolean wait) {
+        String cmd = "";
+        path += "/";
+        int size = name.size();
+        for (int i = 0; i < size; i++) {
+            cmd += "sh "+ path + name.get(i);
+            if (i != size - 1) cmd += " && ";
+        }
+        return execute(cmd, false, wait);
+    }
 
 
     public static int execute(String command, boolean su) {
         return execute(command, su, true);
     }
+
+
 
     public static int execute(String command, boolean su, boolean wait) {
         BufferedReader reader = null;
@@ -34,16 +48,17 @@ public class cmdExer {
 
         ProcessBuilder processBuilder = new ProcessBuilder();
         Map<String, String> environment = processBuilder.environment();
-        if (cwd!=null)
+        if (cwd != null)
             processBuilder.directory(new File(cwd));
-        for (String env:Init.envp) {
+        for (String env : Init.envp) {
             String tmp[] = getByEnv(env);
             processBuilder.environment().put(tmp[0], tmp[1]);
         }
 
         // 设置环境变量
         // environment.put("LD_LIBRARY_PATH", Init.filesDirPath + "/usr/lib");
-        processBuilder.command(shell, "-c", command);
+
+            processBuilder.command(shell, "-c", command);
 
         try {
 
@@ -56,8 +71,8 @@ public class cmdExer {
             while ((line = reader.readLine()) != null) {
 
 
-                Log.e("exer",line);
-               result += line;
+                Log.e("exer", line);
+                result += line;
                 lastLine = line;
             }
 
@@ -91,5 +106,9 @@ public class cmdExer {
 
     public static void setCwd(String path) {
         cwd = path;
+    }
+
+    public static Process getProcess() {
+        return process;
     }
 }

@@ -1,65 +1,54 @@
 package com.pangbai.weblog.activity;
 
+import static com.pangbai.weblog.project.ProjectManager.checkIsHexo;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.util.DisplayMetrics;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.ColorUtils;
-import androidx.core.provider.DocumentsContractCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.internal.ViewUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityHomeBinding;
 import com.pangbai.weblog.databinding.LayoutTerminalBinding;
 import com.pangbai.weblog.execute.cmdExer;
-import com.pangbai.weblog.global.ThemeUtil;
+import com.pangbai.weblog.project.Project;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.Init;
-import com.pangbai.weblog.tool.ProjectManager;
-import com.pangbai.weblog.tool.util;
+import com.pangbai.weblog.project.ProjectManager;
+import com.pangbai.weblog.tool.ThreadUtil;
 import com.pangbai.weblog.view.FileListSelect;
-
-import java.io.File;
-
-import br.tiagohm.markdownview.Utils;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityHomeBinding binding;
     ActivityResultLauncher chooseFolder;
     boolean isTerminalOpen = false;
+    Project selectProject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        new Init(this);
         // chooseFolder = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), result -> openProject(result));
         binding.github.setOnClickListener(this);
         binding.openProject.setOnClickListener(this);
         binding.createProject.setOnClickListener(this);
         binding.pullProject.setOnClickListener(this);
         binding.openTerminal.setOnClickListener(this);
+
     }
 
     @Override
@@ -74,22 +63,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             select(file -> {
                 AlertDialog inputdialog = DialogUtils.showInputDialog(this, getString(R.string.input_blog_title), userInput -> {
-                    ProjectManager projectManager = new ProjectManager();
+                    selectProject = new Project(userInput, file.getAbsolutePath(), ProjectManager.Type.hexo);
+                    ProjectManager projectManager = new ProjectManager(selectProject);
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            boolean init = projectManager.createProject(file.getAbsolutePath(), userInput, ProjectManager.Type.hexo);
-                            runOnUiThread(() -> {
-                                dialog.dismiss();
-                                if (init) {
-                                    openProject(file.getAbsolutePath());
-                                } else {
-                                    Snackbar.make(binding.getRoot(), "Failed, please try terminal", Snackbar.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    }.start();
+                    ThreadUtil.thread(() -> {
+                        boolean init = projectManager.createProject();
+                        projectManager.createScript(HomeActivity.this);
+                        runOnUiThread(() -> {
+                            dialog.dismiss();
+                            if (init) {
+                                openProject(selectProject);
+                            } else {
+                                Snackbar.make(binding.getRoot(), "Failed, please try terminal", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    });
+
 
                 });
             });
@@ -97,45 +86,64 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         } else if (id == R.id.pull_project) {
             select(file -> {
+                if (file.list().length != 0) {
+                    Snackbar.make(binding.getRoot(), "The folder should be empty", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
                 DialogUtils.showInputDialog(this, getString(R.string.clone_git), userInput -> {
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            boolean clone = cmdExer.execute("git clone " + userInput + " " + file.getAbsolutePath(), false) == 0;
-                            dialog.dismiss();
-                            runOnUiThread(() -> {
-                                if (clone) {
-                                    openProject(file.getAbsolutePath());
-
-                                } else {
-                                    Snackbar.make(binding.getRoot(), "Clone failed", Snackbar.LENGTH_SHORT);
-
-                                }
-                            });
+                    ThreadUtil.thread(() -> {
+                        boolean clone = cmdExer.execute("git clone " + userInput + " " + file.getAbsolutePath(), false) == 0;
+                        if (clone) {
+                            if (!checkIsHexo(file)){
+                                runOnUiThread(() -> Snackbar.make(binding.getRoot(),"Is not a hexo project",Snackbar.LENGTH_SHORT).show());
+                                return;
+                            }
+                            selectProject = new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.hexo);
+                            new ProjectManager(selectProject).createScript(HomeActivity.this);
                         }
-                    }.start();
+                        dialog.dismiss();
+                        runOnUiThread(() -> {
+                            if (clone) {
+                                openProject(selectProject);
+                            } else {
+                                Snackbar.make(binding.getRoot(), "Clone failed", Snackbar.LENGTH_SHORT);
+                            }
+                        });
+                    });
+
+
                 });
             });
         } else if (id == R.id.open_project) {
             select(file -> {
-                openProject(file.getAbsolutePath());
+                if (!checkIsHexo(file)){
+                    Snackbar.make(binding.getRoot(),"Is not a hexo project",Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+                selectProject=new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.hexo);
+                new ProjectManager(selectProject).createScript(HomeActivity.this);
+                openProject(selectProject);
             });
-        } else if (id== R.id.open_terminal) {
+        } else if (id == R.id.open_terminal) {
             openTerminal();
+        } else if (id==R.id.setting) {
+            Snackbar.make(binding.getRoot(),"Todo..",Snackbar.LENGTH_SHORT).show();
+        } else if (id==R.id.donate) {
+            Snackbar.make(binding.getRoot(),"Todo..",Snackbar.LENGTH_SHORT).show();
         }
 
     }
 
     void select(FileListSelect.FileChoose fileChoose) {
-        FileListSelect list = new FileListSelect(this, fileChoose, true, null);
+        FileListSelect list = new FileListSelect(this, true, fileChoose);
         list.showChooseDialog();
     }
 
-    // Snackbar.make(v,"loading...",Snackbar.LENGTH_SHORT).show();
-    void openProject(String path) {
+
+    void openProject(Project project) {
+        ProjectManager.saveCurrentProject(project);
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("project_path", path);
         startActivity(intent);
         finish();
     }
@@ -149,19 +157,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             LayoutTerminalBinding cmdBinding = LayoutTerminalBinding.inflate(getLayoutInflater());
 
             bottomSheet.addView(cmdBinding.getRoot());
-           // cmdBinding.terminalBg.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
+            // cmdBinding.terminalBg.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
             cmdBinding.ExtraKey.addView(cmdBinding.terminal.createKeyView());
             cmdBinding.terminal.setTerminal(Init.filesDirPath);
 
             //ThemeUtil.applyEdgeToEdge(getWindow());
 
-            isTerminalOpen=true;
+            isTerminalOpen = true;
         }
 
 
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
-
-
 
 }

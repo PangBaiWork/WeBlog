@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
@@ -10,7 +11,9 @@
         android:layout_height="wrap_content"/>
 
     <androidx.core.widget.NestedScrollView
-
+        android:id="@+id/scrollView"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -32,15 +35,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
+                    app:helperTextEnabled="true"
                     android:hint="Type">
-                    <AutoCompleteTextView
-
-                        android:id="@+id/filled_exposed_dropdown"
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:inputType="none"
+                        android:id="@+id/artical_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:text=""
-                        app:simpleItems="@array/cat_textfield_exposed_dropdown_content"/>
+                        app:simpleItems="@array/default_tag_array"/>
                 </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.Material3.Button.IconButton.Filled"
@@ -50,6 +52,7 @@
                 android:layout_marginLeft="15dp"
                 app:icon="@drawable/ic_save"
                 app:iconPadding="5dp"
+                android:id="@+id/artical_create"
                 android:text="@string/create_article_btn"/>
             </LinearLayout>
 
@@ -70,12 +73,14 @@
                 android:layout_width="match_parent"
                 style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_height="wrap_content"
-                app:helperText="Project path: /....."
                 app:helperTextEnabled="true"
                 android:layout_marginTop="10dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:hint="Path"
                     android:id="@+id/article_path"
+                    android:breakStrategy="simple"
+                    android:hyphenationFrequency="none"
+                    android:inputType="textMultiLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="20dp" />
@@ -86,13 +91,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
                 android:hint="Categories">
-                <AutoCompleteTextView
-                    android:id="@+id/catelog"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/artical_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    app:simpleItems="@array/cat_textfield_exposed_dropdown_content"/>
+                    android:text="" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/article_tag_group"
@@ -142,6 +147,8 @@
                 style="@style/Widget.Material3.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:expandedHintEnabled="false"
                 android:layout_marginTop="10dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:gravity="top|left"
@@ -149,7 +156,9 @@
                     android:id="@+id/article_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     android:inputType="textMultiLine"
+                    android:imeOptions="actionDone"
                     android:minHeight="500dp" />
             </com.google.android.material.textfield.TextInputLayout>
 

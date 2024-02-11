@@ -3,7 +3,8 @@
   <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
     <item name="android:statusBarColor">?android:attr/colorBackground</item>
     <item name="android:navigationBarColor">?android:attr/colorBackground</item>
-    <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_background</item>
+    <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_app2</item>
+
     <item name="android:windowLightStatusBar">true</item>
   <!--  <item name="shapeCornerFamily">cut</item>-->
        <!-- Customize your theme here. -->

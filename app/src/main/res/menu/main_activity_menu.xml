@@ -11,11 +11,16 @@
     <item
         android:id="@+id/menu_save"
         android:title="@string/save"/>
-
+    <item
+        android:id="@+id/menu_run"
+        android:title="Run"
+        android:icon="@drawable/ic_run"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_folder"
         android:title="Folder"
         android:icon="@drawable/ic_folder"
         app:showAsAction="ifRoom" />
+
 </menu>
 
