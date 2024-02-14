@@ -38,7 +38,35 @@
         <io.github.rosemoe.sora.widget.CodeEditor
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+        android:layout_marginBottom="45dp"
             android:id="@+id/editor"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:fitsSystemWindows="false"
+           android:layout_gravity="bottom|end"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/float_action_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add"
+                style="?attr/floatingActionButtonStyle"
+                app:useCompatPadding="true"/>
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/float_action_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:src="@drawable/ic_file_previous"
+                style="?attr/floatingActionButtonStyle"
+                app:useCompatPadding="true" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +84,6 @@
                 android:layout_height="45dp"
                 android:orientation="horizontal"
                 android:background="?attr/colorSurface"
-
                 android:id="@+id/edit_symbol"/>
          </HorizontalScrollView>
 
@@ -74,31 +101,7 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_anchor="@id/editor"
-            app:layout_anchorGravity="bottom|right"
-            android:layout_marginBottom="50dp"
-            android:orientation="vertical">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/float_action_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add"
-                style="?attr/floatingActionButtonStyle"
-                app:useCompatPadding="true"/>
-
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/float_action_undo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_file_previous"
-                style="?attr/floatingActionButtonStyle"
-                app:useCompatPadding="true" />
-        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>

@@ -2,12 +2,16 @@
 package com.pangbai.weblog.activity;
 
 
+import static com.google.android.material.floatingactionbutton.FloatingActionButton.SIZE_MINI;
+import static com.google.android.material.floatingactionbutton.FloatingActionButton.SIZE_NORMAL;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -113,6 +117,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     void setEditor() {
         binding.editor.setCursorAnimationEnabled(false);
         binding.editSymbol.init(binding.editor);
+        binding.editor.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            // keyboard listener
+            if (oldBottom-bottom>50){
+                binding.floatActionAdd.hide();
+            }else {
+                binding.floatActionAdd.show();
+            }
+        });
 
         //initialize TEXTMATE
         try {
