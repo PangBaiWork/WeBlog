@@ -12,6 +12,7 @@ done
 return 0
 
 
+/data/data/com.pangbai.weblog/files/usr/bin/hugo
 /data/data/com.pangbai.weblog/files/usr/bin/derb
 /data/data/com.pangbai.weblog/files/usr/bin/icuinfo
 /data/data/com.pangbai.weblog/files/usr/bin/gencfu

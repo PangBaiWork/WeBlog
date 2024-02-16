@@ -2,16 +2,11 @@
 package com.pangbai.weblog.activity;
 
 
-import static com.google.android.material.floatingactionbutton.FloatingActionButton.SIZE_MINI;
-import static com.google.android.material.floatingactionbutton.FloatingActionButton.SIZE_NORMAL;
-
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -39,7 +34,7 @@ import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.databinding.FileListBinding;
 import com.pangbai.weblog.databinding.LayoutTerminalBinding;
 import com.pangbai.weblog.editor.TextMate;
-import com.pangbai.weblog.execute.NodeExer;
+import com.pangbai.weblog.execute.HexoExer;
 import com.pangbai.weblog.execute.cmdExer;
 import com.pangbai.weblog.preference.PrefManager;
 import com.pangbai.weblog.tool.DialogUtils;
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         PrefManager.init(getApplicationContext());
         project=ProjectManager.getCurrentProject();
-        if (PrefManager.isFirstLaunch()||project==null) {
+        if (PrefManager.isFirstLaunch()||project==null||!new File(project.getProjectPath()).exists()) {
             util.startActivity(this, HomeActivity.class, false);
             finish();
             return;
@@ -101,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        NodeExer.setProjectPath(project.getProjectPath());
+        HexoExer.setProjectPath(project.getProjectPath());
         setLayout();
         setRecycleView();
         setTabLayout();
@@ -165,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     void setLayout() {
-
+        binding.toolbar.setSubtitle(project.getBlogName());
         ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, 0, 0);
         //  mToggle.setDrawerIndicatorEnabled(true);
         binding.drawerLayout.addDrawerListener(mToggle);
@@ -186,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (id == R.id.menu_run) {
                 File file = new File(project.scriptPath);
                 if (!file.exists()) return false;
-                DialogUtils.showSelectDialog(this, getString(R.string.select_scripts), file.list(), selets -> {
+                DialogUtils.showMultiSelectDialog(this, getString(R.string.select_scripts), file.list(), selets -> {
                     binding.progressbar.setIndeterminate(true);
                     Snackbar.make(binding.getRoot(), "Excuting", Snackbar.LENGTH_SHORT).show();
 
@@ -363,14 +358,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.project_server) {
             if (livePreview != null) {
-                livePreview.destroy();
+               livePreview.destroy();
                 return false;
             }
             DialogUtils.showInputDialog(this, getString(R.string.start_server) + project.blogType.name()
                     , "4000", userInput -> {
                         item.setChecked(true);
                         Snackbar.make(binding.navigationView, "Server Running", Snackbar.LENGTH_SHORT).show();
-                        livePreview = NodeExer.hexoServer(userInput, false);
+                        livePreview = project.blogCmd.Server(userInput, false);
                         checkProcess(item);
                     });
 

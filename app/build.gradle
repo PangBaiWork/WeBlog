@@ -124,9 +124,10 @@ implementation "androidx.compose.material3:material3:1.1.2"
     implementation(platform("io.github.Rosemoe.sora-editor:bom:0.22.1"))
     implementation("io.github.Rosemoe.sora-editor:editor")
 
-            implementation("io.github.Rosemoe.sora-editor:language-textmate")
+    implementation("io.github.Rosemoe.sora-editor:language-textmate")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
+
     implementation project(path: ':markdownView')
   //  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.8.0.202311291450-r'
 

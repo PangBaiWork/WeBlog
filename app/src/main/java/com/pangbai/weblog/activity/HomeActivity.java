@@ -1,6 +1,8 @@
 package com.pangbai.weblog.activity;
 
 import static com.pangbai.weblog.project.ProjectManager.checkIsHexo;
+import static com.pangbai.weblog.project.ProjectManager.checkIsHugo;
+import static com.pangbai.weblog.project.ProjectManager.checkType;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -62,25 +64,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.create_project) {
 
             select(file -> {
-                AlertDialog inputdialog = DialogUtils.showInputDialog(this, getString(R.string.input_blog_title), userInput -> {
-                    selectProject = new Project(userInput, file.getAbsolutePath(), ProjectManager.Type.hexo);
+                DialogUtils.showSingleSelectDialog(this, getString(R.string.select_blog_engine),ProjectManager.getTypeArray(), select -> {
+                    selectProject = new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.valueOf(select));
                     ProjectManager projectManager = new ProjectManager(selectProject);
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
                     ThreadUtil.thread(() -> {
                         boolean init = projectManager.createProject();
-                        projectManager.createScript(HomeActivity.this);
+                       if (init) projectManager.createScript(HomeActivity.this);
+
                         runOnUiThread(() -> {
                             dialog.dismiss();
                             if (init) {
                                 openProject(selectProject);
                             } else {
-                                Snackbar.make(binding.getRoot(), "Failed, please try terminal", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(binding.getRoot(), "Failed, Please try again at the terminal", Snackbar.LENGTH_LONG).show();
                             }
                         });
                     });
 
 
                 });
+
             });
 
 
@@ -95,11 +99,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     ThreadUtil.thread(() -> {
                         boolean clone = cmdExer.execute("git clone " + userInput + " " + file.getAbsolutePath(), false) == 0;
                         if (clone) {
-                            if (!checkIsHexo(file)){
-                                runOnUiThread(() -> Snackbar.make(binding.getRoot(),"Is not a hexo project",Snackbar.LENGTH_SHORT).show());
+                            ProjectManager.Type type = checkType(file);
+                            if (type == null) {
+                                runOnUiThread(() -> Snackbar.make(binding.getRoot(), "Is not a hexo or hugo project", Snackbar.LENGTH_SHORT).show());
                                 return;
                             }
-                            selectProject = new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.hexo);
+                            selectProject = new Project(file.getName(), file.getAbsolutePath(), type);
                             new ProjectManager(selectProject).createScript(HomeActivity.this);
                         }
                         dialog.dismiss();
@@ -117,20 +122,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             });
         } else if (id == R.id.open_project) {
             select(file -> {
-                if (!checkIsHexo(file)){
-                    Snackbar.make(binding.getRoot(),"Is not a hexo project",Snackbar.LENGTH_SHORT).show();
+                ProjectManager.Type type = checkType(file);
+                if (type == null) {
+                    Snackbar.make(binding.getRoot(), "Is not a hexo or hugo project", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
-                selectProject=new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.hexo);
+                selectProject = new Project(file.getName(), file.getAbsolutePath(), type);
                 new ProjectManager(selectProject).createScript(HomeActivity.this);
                 openProject(selectProject);
             });
         } else if (id == R.id.open_terminal) {
             openTerminal();
-        } else if (id==R.id.setting) {
-            Snackbar.make(binding.getRoot(),"Todo..",Snackbar.LENGTH_SHORT).show();
-        } else if (id==R.id.donate) {
-            Snackbar.make(binding.getRoot(),"Todo..",Snackbar.LENGTH_SHORT).show();
+        } else if (id == R.id.setting) {
+            Snackbar.make(binding.getRoot(), "Todo..", Snackbar.LENGTH_SHORT).show();
+        } else if (id == R.id.donate) {
+            Snackbar.make(binding.getRoot(), "Todo..", Snackbar.LENGTH_SHORT).show();
         }
 
     }

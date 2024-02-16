@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:icon="@drawable/ic_app2"
+        android:icon="@drawable/weblog"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <service

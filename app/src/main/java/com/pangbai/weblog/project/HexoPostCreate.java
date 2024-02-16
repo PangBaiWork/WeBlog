@@ -8,37 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class HexoPostCreate {
-    ArticleCreateFragment.Type type;
-    String path, title, category, description;
-    String[] tags;
-    PrintWriter writer;
+public class HexoPostCreate extends PostCreate{
+
 
     public HexoPostCreate(ArticleCreateFragment.Type type) {
-        this.type = type;
+        super(type);
     }
 
-    public void setParams(String title, String path, String category, String description, String[] tags) {
-        this.title = title;
-        this.path = path;
-        this.category = category;
-        this.description = description;
-        this.tags = tags;
-
-    }
 
     public boolean create() {
-        File file = new File(path);
-        if (file.exists()) return false;
-        File dir = file.getParentFile();
-        if (!dir.exists()) dir.mkdirs();
-        try {
-            file.createNewFile();
-            writer = new PrintWriter(new FileWriter(file), true);
-        } catch (Exception e) {
-            return false;
-        }
-
+    if (writer==null)return false;
 
         writeFrontmatter();
         writeTitle(title);
@@ -75,6 +54,7 @@ public class HexoPostCreate {
             String tmp = "- " + tag;
             writer.println(tmp);
         }
+
     }
 
     void writeDescription(String description) {

@@ -5,8 +5,8 @@ import android.content.DialogInterface;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,24 +23,32 @@ public class DialogUtils {
     public interface OnPositiveClickListener {
         void onPositiveButtonClick();
     }
+
     public interface OnNegativeClickListener {
         void onNegativeButtonClick();
     }
+
     public interface DialogInputListener {
         void onConfirm(String userInput);
     }
-    public interface OnSelectListener {
+
+    public interface OnMultiSelectListener {
         void select(List<String> selects);
     }
-    public static AlertDialog showConfirmationDialog(Context context, String title, String message,
-                                              final OnPositiveClickListener positiveClickListener,final OnNegativeClickListener negativeClickListener){
-       return  showConfirmationDialog(context,title,message,context.getString(R.string.confirm),context.getString(R.string.cancle),positiveClickListener,negativeClickListener);
+
+    public interface OnSelectListener {
+        void select(String select);
     }
 
     public static AlertDialog showConfirmationDialog(Context context, String title, String message,
-                                              String positiveButtonText, String negativeButtonText,
-                                              final OnPositiveClickListener positiveClickListener,final OnNegativeClickListener negativeClickListener) {
-        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
+                                                     final OnPositiveClickListener positiveClickListener, final OnNegativeClickListener negativeClickListener) {
+        return showConfirmationDialog(context, title, message, context.getString(R.string.confirm), context.getString(R.string.cancle), positiveClickListener, negativeClickListener);
+    }
+
+    public static AlertDialog showConfirmationDialog(Context context, String title, String message,
+                                                     String positiveButtonText, String negativeButtonText,
+                                                     final OnPositiveClickListener positiveClickListener, final OnNegativeClickListener negativeClickListener) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(positiveButtonText, (dialogInterface, i) -> {
@@ -52,19 +60,37 @@ public class DialogUtils {
                     if (negativeClickListener != null) {
                         negativeClickListener.onNegativeButtonClick();
                     }
-                  //  dialogInterface.dismiss();
+                    //  dialogInterface.dismiss();
                 });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         return alertDialog;
     }
-    public static AlertDialog showSelectDialog(Context context,String title,String[] choices,OnSelectListener callback) {
-            return showSelectDialog(context,title,choices,new boolean[choices.length],callback);
+
+    public static AlertDialog showSingleSelectDialog(Context context, String title, String[] choices, OnSelectListener callback) {
+        return new MaterialAlertDialogBuilder(context)
+                .setTitle(title)
+                .setPositiveButton(
+                        context.getString(R.string.confirm),
+                        (DialogInterface dialog, int which) -> {
+                            int checkedItemPosition =
+                                    ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                            if (checkedItemPosition != AdapterView.INVALID_POSITION) {
+                                callback.select(choices[checkedItemPosition]);
+                            }
+                        })
+                .setNegativeButton(context.getString(R.string.cancle), null)
+                .setSingleChoiceItems(choices, 1, null)
+                .show();
     }
 
-    public static AlertDialog showSelectDialog(Context context,String title,String[] choices,boolean[] choicesInitial,OnSelectListener callback){
-      return   new MaterialAlertDialogBuilder(context)
+    public static AlertDialog showMultiSelectDialog(Context context, String title, String[] choices, OnMultiSelectListener callback) {
+        return showMultiSelectDialog(context, title, choices, new boolean[choices.length], callback);
+    }
+
+    public static AlertDialog showMultiSelectDialog(Context context, String title, String[] choices, boolean[] choicesInitial, OnMultiSelectListener callback) {
+        return new MaterialAlertDialogBuilder(context)
                 .setTitle(title)
                 .setPositiveButton(
                         context.getString(R.string.confirm),
@@ -78,26 +104,26 @@ public class DialogUtils {
                                 }
                             }
                             callback.select(result);
-                          //  Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
+                            //  Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
                         })
                 .setNegativeButton(context.getString(R.string.cancle), null)
                 .setMultiChoiceItems(choices, choicesInitial, null)
                 .show();
     }
 
-    public static AlertDialog showLoadingDialog(Context context){
-        return showLoadingDialog(context,null);
+    public static AlertDialog showLoadingDialog(Context context) {
+        return showLoadingDialog(context, null);
     }
 
-    public static AlertDialog showLoadingDialog(Context context,String title){
-        if (title==null)title=context.getString(R.string.loading);
-        return showCustomLayoutDialog(context,title,R.layout.dialog_loading);
+    public static AlertDialog showLoadingDialog(Context context, String title) {
+        if (title == null) title = context.getString(R.string.loading);
+        return showCustomLayoutDialog(context, title, R.layout.dialog_loading);
     }
 
 
-    public static AlertDialog showCustomLayoutDialog(Context context,String title, int layoutResId) {
+    public static AlertDialog showCustomLayoutDialog(Context context, String title, int layoutResId) {
         // Inflate custom layout
-        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(layoutResId, null);
         builder.setView(dialogView)
@@ -110,19 +136,20 @@ public class DialogUtils {
     }
 
 
-    public static void showInputDialog(Context context, String title,String text,final DialogInputListener pos){
-        EditText editText=  showInputDialog(context,title,new String[]{"确定","取消"},pos,null).findViewById(R.id.dialog_text_input);
+    public static void showInputDialog(Context context, String title, String text, final DialogInputListener pos) {
+        EditText editText = showInputDialog(context, title, new String[]{"确定", "取消"}, pos, null).findViewById(R.id.dialog_text_input);
         if (editText != null) {
             editText.setText(text);
             editText.setSelection(text.length());
         }
     }
-    public static AlertDialog showInputDialog(Context context, String title,final DialogInputListener pos){
-       return showInputDialog(context,title,new String[]{context.getString(R.string.confirm),context.getString(R.string.cancle)},pos,null);
+
+    public static AlertDialog showInputDialog(Context context, String title, final DialogInputListener pos) {
+        return showInputDialog(context, title, new String[]{context.getString(R.string.confirm), context.getString(R.string.cancle)}, pos, null);
     }
 
-    public static AlertDialog showInputDialog(Context context, String title,String[] button,final DialogInputListener pos,final DialogInputListener neg) {
-        MaterialAlertDialogBuilder builder=  new MaterialAlertDialogBuilder(context);
+    public static AlertDialog showInputDialog(Context context, String title, String[] button, final DialogInputListener pos, final DialogInputListener neg) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_input, null);
 
@@ -130,16 +157,16 @@ public class DialogUtils {
         builder.setView(dialogView)
                 .setTitle(title)
                 .setPositiveButton(button[0], (dialog, which) -> {
-                    if (pos==null)
+                    if (pos == null)
                         return;
                     String userInput = inputEditText.getText().toString();
-                        pos.onConfirm(userInput);
+                    pos.onConfirm(userInput);
                 })
                 .setNegativeButton(button[1], (dialog, which) -> {
                     if (neg == null)
                         return;
                     String userInput = inputEditText.getText().toString();
-                        neg.onConfirm(userInput);
+                    neg.onConfirm(userInput);
 
                 });
 

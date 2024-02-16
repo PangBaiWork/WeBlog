@@ -4,8 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.pangbai.weblog.execute.NodeExer;
-
 public class MainService extends Service {
   final   public  static String action= "action";
   Process livePreview;
@@ -24,7 +22,7 @@ public class MainService extends Service {
           return super.onStartCommand(intent, flags, startId);
       }
       if (type==Type.live_preview){
-       // livePreview=  NodeExer.hexoServer(false);
+       // livePreview=  HexoExer.hexoServer(false);
       }
 
         return super.onStartCommand(intent, flags, startId);

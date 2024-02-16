@@ -161,6 +161,14 @@ public class ArticleCreateFragment extends BottomSheetDialogFragment implements 
             } else if (!name.isBlank()) {
                 return projectPath + "/source/" + name + "/index.md";
             }
+        } else if (project.blogType == ProjectManager.Type.hugo) {
+            if (binding.articalType.getText().toString().equals(Type.POST.name())) {
+                projectPath += "/content/post";
+                if (cwd.contains(projectPath)) projectPath = cwd;
+            } else if (!name.isBlank()) {
+               projectPath+="/content/"+name;
+                // return projectPath + "/content/" + name + "/index.md";
+            }
         }
 
 
