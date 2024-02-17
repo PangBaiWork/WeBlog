@@ -8,16 +8,18 @@
     <LinearLayout
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/ic_app1"/>
-<TextView
-    android:layout_width="wrap_content"
-    android:text="WeBlog"
-    android:gravity="center"
-    android:textStyle="bold"
-    android:textSize="20sp"
-    android:layout_marginLeft="20dp"
-    android:layout_height="wrap_content"
-    tools:ignore="HardcodedText">
+        android:layout_marginStart="-40dp"
 
-</TextView>
+        android:background="@drawable/ic_app1"/>
+
+    <TextView
+        android:id="@+id/weblog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WeBlog"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText">
+
+    </TextView>
 </LinearLayout>

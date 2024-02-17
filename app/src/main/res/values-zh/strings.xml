@@ -42,4 +42,9 @@
     <string name="sdcard_description">读写外部数据的权限申请</string>
     <string name="select_blog_engine">选择一个博客引擎</string>
     <string name="ask_install_hexo">是否安装hexo \n你可以在之后手动安装它或者只使用Hugo</string>
+    <string name="live_preview">实时预览</string>
+    <string name="script_manager">脚本管理</string>
+    <string name="close_project">关闭项目</string>
+    <string name="environment">环境</string>
+    <string name="setting">设置</string>
 </resources>

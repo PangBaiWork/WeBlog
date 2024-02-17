@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.editor.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             // keyboard listener
             if (oldBottom-bottom>50){
-                binding.floatActionAdd.hide();
+                binding.floatActionAdd.setVisibility(View.INVISIBLE);
             }else {
-                binding.floatActionAdd.show();
+                binding.floatActionAdd.setVisibility(View.VISIBLE);
             }
         });
 

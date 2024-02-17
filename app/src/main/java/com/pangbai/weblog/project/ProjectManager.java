@@ -2,9 +2,6 @@ package com.pangbai.weblog.project;
 
 import android.content.Context;
 
-import com.pangbai.weblog.execute.BlogCmd;
-import com.pangbai.weblog.execute.HexoExer;
-import com.pangbai.weblog.execute.HugoExer;
 import com.pangbai.weblog.preference.PrefManager;
 import com.pangbai.weblog.tool.IO;
 

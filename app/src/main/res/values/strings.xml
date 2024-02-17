@@ -52,4 +52,9 @@
     <string name="sdcard_description">Request for permission to read and write SD card data</string>
     <string name="select_blog_engine">Choose a blog engine</string>
     <string name="ask_install_hexo">Do you want to install hexo? \n If not you should manually install it or only use Hugo</string>
+    <string name="live_preview">Live Preview</string>
+    <string name="script_manager">Script Manage</string>
+    <string name="close_project">Close Project</string>
+    <string name="environment">Environment</string>
+    <string name="setting">Setting</string>
 </resources>

@@ -85,7 +85,11 @@ public class Init {
                                 () -> {
                                     dialog = DialogUtils.showLoadingDialog(ct, "Installing hexo");
                                     installHexo(ct);
-                                }, () -> checkPermission(ct));
+                                }, () -> {
+                                    dialog.dismiss();
+                                    checkPermission(ct);
+
+                                });
 
 
                     });

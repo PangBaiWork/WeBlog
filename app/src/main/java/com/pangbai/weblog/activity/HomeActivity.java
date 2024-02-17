@@ -71,7 +71,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     ThreadUtil.thread(() -> {
                         boolean init = projectManager.createProject();
                        if (init) projectManager.createScript(HomeActivity.this);
-
                         runOnUiThread(() -> {
                             dialog.dismiss();
                             if (init) {

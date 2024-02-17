@@ -12,19 +12,19 @@
             <item
                 android:id="@+id/project_server"
                 android:icon="@drawable/ic_server"
-                android:title="Live Preview"
+                android:title="@string/live_preview"
                 android:checkable="true"
                 app:showAsAction="ifRoom"/>
             <item
                 android:id="@+id/project_script"
                 android:icon="@drawable/ic_script"
-                android:title="Script Manager"
+                android:title="@string/script_manager"
                 android:checkable="true"
                 app:showAsAction="ifRoom"/>
             <item
                 android:id="@+id/project_close"
                 android:icon="@drawable/ic_close"
-                android:title="Close Project"
+                android:title="@string/close_project"
                 android:checkable="true"
                 app:showAsAction="ifRoom"/>
         </menu>
@@ -36,13 +36,13 @@
             <item
                 android:id="@+id/global_env"
                 android:icon="@drawable/ic_environment"
-                android:title="Environment"
+                android:title="@string/environment"
                 android:checkable="true"
                 app:showAsAction="ifRoom"/>
             <item
                 android:id="@+id/global_setting"
                 android:icon="@drawable/ic_setting"
-                android:title="Setting"
+                android:title="@string/setting"
                 android:checkable="true"
                 app:showAsAction="ifRoom"/>
 

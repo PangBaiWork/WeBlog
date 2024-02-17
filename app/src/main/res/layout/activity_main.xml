@@ -115,7 +115,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
-        app:itemHorizontalPadding="40dp"
+        app:itemHorizontalPadding="60dp"
         app:headerLayout="@layout/activity_header"
         app:itemTextAppearanceActiveBoldEnabled="true"
         app:menu="@menu/navigation_menu"/>
