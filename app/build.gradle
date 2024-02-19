@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
 
@@ -10,13 +9,13 @@ plugins {
 //apply plugin: 'kotlin-android'
 
 
-
-
 android {
     namespace 'com.pangbai.weblog'
     compileSdk 34
     buildToolsVersion "33.0.0"
-
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
     packagingOptions {
         jniLibs {
             useLegacyPackaging true
@@ -33,7 +32,7 @@ android {
         ndk {//让gradle知道ndk的配置
             abiFilter "arm64-v8a"//so文件的平
         }
-        vectorDrawables { 
+        vectorDrawables {
             useSupportLibrary true
         }
         externalNativeBuild {
@@ -46,22 +45,22 @@ android {
             }
         }
     }
-  
-signingConfigs {
-    release {
-        keyAlias 'weblog'
-        keyPassword '123456'
-        storeFile file('weblog.jks')
-        storePassword '123456'
 
-    }
-    debug {
-        keyAlias 'weblog'
-        keyPassword '123456'
-        storeFile file('weblog.jks')
-        storePassword '123456'
+    signingConfigs {
+        release {
+            keyAlias 'weblog'
+            keyPassword '123456'
+            storeFile file('weblog.jks')
+            storePassword '123456'
 
-    }
+        }
+        debug {
+            keyAlias 'weblog'
+            keyPassword '123456'
+            storeFile file('weblog.jks')
+            storePassword '123456'
+
+        }
     }
 
 
@@ -69,15 +68,15 @@ signingConfigs {
         release {
             shrinkResources false
             minifyEnabled false
-           proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    //    kotlinCompilerExtensionVersion = "1.1.1"
-   
+        //    kotlinCompilerExtensionVersion = "1.1.1"
+
     }
     externalNativeBuild {
         /* cmake {
@@ -94,20 +93,17 @@ signingConfigs {
         dataBinding true
 
 
-
-
-        
     }
-    composeOptions{
-      //  kotlinCompilerExtensionVersion = "1.4.5"
+    composeOptions {
+        //  kotlinCompilerExtensionVersion = "1.4.5"
     }
 
 }
 
 
 dependencies {
-implementation 'com.google.android.material:material:1.11.0'
-implementation "androidx.compose.material3:material3:1.2.0"
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation "androidx.compose.material3:material3:1.2.0"
     implementation 'androidx.preference:preference:1.2.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
@@ -117,14 +113,13 @@ implementation "androidx.compose.material3:material3:1.2.0"
 
     implementation("io.github.Rosemoe.sora-editor:language-textmate")
 
-   // implementation("androidx.appcompat:appcompat:1.6.1")
+    // implementation("androidx.appcompat:appcompat:1.6.1")
 
     implementation project(path: ':markdownView')
-
 
 
     //  implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.8.0.202311291450-r'
 
     //   implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-  //  implementation("com.google.android.material:material:1.9.0")
+    //  implementation("com.google.android.material:material:1.9.0")
 }
