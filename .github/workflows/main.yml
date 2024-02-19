@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -32,5 +32,5 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v2
       with:
-          name:  dowork-debug
+          name:  WeBlog-debug
           path: app/build/outputs/apk/debug/*.apk
