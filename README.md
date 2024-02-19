@@ -23,8 +23,8 @@ and preview blogs. GIT, terminal, custom Shell scripts，Create articles, tag ma
 * [x] Tags and categories select
 * [x] Hexo project support
 * [x] Hugo project support
-* [ ] Preference support
-* [ ] Environment information 
+* [x] Preference support
+* [x] Environment information 
 ## dependencies
 [sora-editor](https://github.com/Rosemoe/sora-editor)  
 [Termux](https://github.com/termux/termux-app)  

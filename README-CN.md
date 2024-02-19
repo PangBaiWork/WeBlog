@@ -18,8 +18,8 @@ Read this in other languages: [English](README.md)  , [简体中文](README-CN.m
 * [x] Tags and categories select
 * [x] Hexo project support
 * [x] Hugo project support
-* [ ] Preference support
-* [ ] Environment information 
+* [x] Preference support
+* [x] Environment information 
 ## 鸣谢的开源项目
 [sora-editor](https://github.com/Rosemoe/sora-editor)  
 [Termux](https://github.com/termux/termux-app)  
