@@ -1,14 +1,10 @@
 package com.pangbai.weblog.project;
 
+
 import com.pangbai.weblog.view.ArticleCreateFragment;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
-public class HexoPostCreate extends PostCreate{
+public class HexoPostCreate extends PostCreate {
 
 
     public HexoPostCreate(ArticleCreateFragment.Type type) {
@@ -17,7 +13,8 @@ public class HexoPostCreate extends PostCreate{
 
 
     public boolean create() {
-    if (writer==null)return false;
+        if (writer == null)
+            return false;
 
         writeFrontmatter();
         writeTitle(title);
