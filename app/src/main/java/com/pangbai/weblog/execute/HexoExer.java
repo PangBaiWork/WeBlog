@@ -5,7 +5,7 @@ public class HexoExer  extends BlogCmd{
         BlogCmd.setProjectPath(path);
     }
     public  boolean changeConfig(String key,String value){
-        return cmdExer.execute("hexo config "+key+" "+value,false)==0;
+        return cmdExer.execute("hexo Config "+key+" "+value,false)==0;
     }
     public  boolean initBlog(String path){
         if (path==null)path="";

@@ -1,11 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
   <!-- Base application theme. -->
   <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
     <item name="android:statusBarColor">?android:attr/colorBackground</item>
     <item name="android:navigationBarColor">?android:attr/colorBackground</item>
     <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/weblog</item>
     <item name="android:windowLightStatusBar">true</item>
-  <!--  <item name="shapeCornerFamily">cut</item>-->
+    <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+<!--  <item name="shapeCornerFamily">cut</item>-->
        <!-- Customize your theme here. -->
     <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
   </style>
@@ -16,19 +18,29 @@
   <style name="ThemeOverlay.Catalog.BottomSheetDialog.Scrollable" parent="ThemeOverlay.Material3.BottomSheetDialog">
     <item name="bottomSheetStyle">@style/Widget.Catalog.BottomSheet.Modal.Scrollable</item>
     <item name="android:windowSoftInputMode">adjustPan</item>
-
   </style>
 
   <style name="Widget.Catalog.BottomSheet.Modal.Scrollable" parent="Widget.Material3.BottomSheet.Modal">
     <item name="paddingBottomSystemWindowInsets">false</item>
-
   </style>
 
   <style name="DialogAnim" parent="@android:style/Animation">
     <item name="android:windowEnterAnimation">@anim/dialog_in</item>
     <item name="android:windowExitAnimation">@anim/dialog_out</item>
   </style>
+
   <style name="terminal_bottomsheet" parent="Widget.Material3.BottomSheet.Modal">
     <item name="backgroundTint">?attr/colorPrimary</item>
   </style>
+
+  <!-- override preference style-->
+  <style name="Preference.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat" tools:ignore="ResourceCycle">
+    <item name="widgetLayout">@layout/pref_switch</item>
+  </style>
+
+  <style name="Preference.Category.Material" parent="Preference.Category.Material" tools:ignore="PrivateResource,ResourceCycle">
+    <item name="layout">@layout/pref_category</item>
+  </style>
+
+
 </resources>

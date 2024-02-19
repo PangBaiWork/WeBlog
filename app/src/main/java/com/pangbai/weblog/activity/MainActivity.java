@@ -4,7 +4,6 @@ package com.pangbai.weblog.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,9 +33,11 @@ import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.databinding.FileListBinding;
 import com.pangbai.weblog.databinding.LayoutTerminalBinding;
 import com.pangbai.weblog.editor.TextMate;
+import com.pangbai.weblog.execute.BlogCmd;
 import com.pangbai.weblog.execute.HexoExer;
 import com.pangbai.weblog.execute.cmdExer;
 import com.pangbai.weblog.preference.PrefManager;
+import com.pangbai.weblog.preference.Config;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.IO;
 import com.pangbai.weblog.tool.Init;
@@ -81,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PrefManager.init(getApplicationContext());
-        project=ProjectManager.getCurrentProject();
-        if (PrefManager.isFirstLaunch()||project==null||!new File(project.getProjectPath()).exists()) {
+        project = ProjectManager.getCurrentProject();
+        if (PrefManager.isFirstLaunch() || project == null || !new File(project.getProjectPath()).exists()) {
             util.startActivity(this, HomeActivity.class, false);
             finish();
             return;
@@ -90,9 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new Init(this);
 
 
-
-
-     //   project = new Project("PangBai's Blog", "/storage/emulated/0/blog1", ProjectManager.Type.hexo);
+        //   project = new Project("PangBai's Blog", "/storage/emulated/0/blog1", ProjectManager.Type.hexo);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -114,10 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.editSymbol.init(binding.editor);
         binding.editor.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             // keyboard listener
-            if (oldBottom-bottom>50){
-                binding.floatActionAdd.setVisibility(View.INVISIBLE);
-            }else {
-                binding.floatActionAdd.setVisibility(View.VISIBLE);
+            boolean isUndoDisplay = Config.getBool(PrefManager.Keys.bl_interface_undo_button_display);
+            View view = isUndoDisplay ? binding.floatActionAdd : binding.floatActionLayout;
+            if (oldBottom - bottom > 50) {
+                view.setVisibility(View.INVISIBLE);
+            } else {
+                view.setVisibility(View.VISIBLE);
             }
         });
 
@@ -171,9 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //状态栏中的文字颜色和图标颜色，需要android系统6.0以上，而且目前只有一种可以修改（一种是深色，一种是浅色即白色）
         //修改为深色，因为我们把状态栏的背景色修改为主题色白色，默认的文字及图标颜色为白色，导致看不到了。
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+
 
         binding.toolbar.setOnMenuItemClickListener(item -> {
 
@@ -230,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         include_binding.recycleviewFiles.setAdapter(filesListAdapter);
         include_binding.recycleviewFiles.setLayoutManager(new LinearLayoutManager(this));
         String path;
-        path =project.getProjectPath();
+        path = project.getProjectPath();
         filesListAdapter.showFileList(path, null);
         filesListAdapter.setActionButton(include_binding);
 
@@ -326,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ContentIO.writeTo(editorText, new FileOutputStream(currentFile), true);
                 runOnUiThread(() -> {
                     binding.progressbar.setIndeterminate(false);
-                   // Snackbar.make(binding.getRoot(), "Saved", Snackbar.LENGTH_SHORT).show();
+                    // Snackbar.make(binding.getRoot(), "Saved", Snackbar.LENGTH_SHORT).show();
                     if (IO.isMdFile(currentFile)) markdown.loadMarkdownFromFile(currentFile);
                 });
             } catch (IOException e) {
@@ -358,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.project_server) {
             if (livePreview != null) {
-               livePreview.destroy();
+                livePreview.destroy();
                 return false;
             }
             DialogUtils.showInputDialog(this, getString(R.string.start_server) + project.blogType.name()
@@ -380,11 +379,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             util.startActivity(this, HomeActivity.class, false);
             finish();
         } else if (id == R.id.global_setting) {
-            Snackbar.make(binding.navigationView,"Todo..",Snackbar.LENGTH_SHORT).show();
-
+            util.startActivity(this, SettingsActivity.class,false);
         } else if (id == R.id.global_env) {
-            Snackbar.make(binding.navigationView,"Todo..",Snackbar.LENGTH_SHORT).show();
-
+           Snackbar.make(binding.navigationView, "Checking", Snackbar.LENGTH_SHORT).show();
+            ThreadUtil.thread(() -> {
+              String res=  BlogCmd.checkEnvironment();
+              runOnUiThread(() -> {
+                  DialogUtils.showConfirmationDialog(this,getString(R.string.environment),res,null,null);
+              });
+            });
         }
         return false;
     }

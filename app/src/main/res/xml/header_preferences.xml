@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="Interface">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="bl_interface_undo_button_display"
+            app:summaryOff="The button will be hidden during editing"
+            app:summaryOn="Always visible"
+            app:icon="@drawable/ic_file_previous"
+            app:title="Undo float action button" />
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Artical">
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        app:key="bl_artical_title_to_md5"
+        app:summaryOff="Use the title as the file name"
+        app:summaryOn="It takes effect when the title is not an ASCII string"
+        app:icon="@drawable/ic_setting_markdown"
+        app:title="Convert the file name to md5" />
+    </PreferenceCategory>
+  <!--
+    <Preference
+        app:fragment="com.pangbai.weblog.activity.SettingsActivity$MessagesFragment"
+        app:icon="@drawable/messages"
+        app:key="messages_header"
+        app:title="@string/messages_header" />
+
+    <Preference
+        app:fragment="com.pangbai.weblog.activity.SettingsActivity$SyncFragment"
+        app:icon="@drawable/sync"
+        app:key="sync_header"
+        app:title="@string/sync_header" />
+-->
+</PreferenceScreen>

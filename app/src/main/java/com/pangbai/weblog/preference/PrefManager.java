@@ -3,6 +3,8 @@ package com.pangbai.weblog.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -11,24 +13,37 @@ public class PrefManager {
         tags,
         category,
         current_project,
+        first_launch,
+        bl_interface_undo_button_display,
+        bl_artical_title_to_md5
     }
 
     static SharedPreferences pref;
-    static String first_launch = "first_launch";
-    final static String prefName = "weblog_preference";
+
+
 
 
     public static void init(Context context) {
-        pref = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        pref =PreferenceManager.getDefaultSharedPreferences(context);
+        Config.update();
 
     }
 
     public static boolean isFirstLaunch() {
-        if (pref.getBoolean(first_launch, true)) {
-            pref.edit().putBoolean(first_launch, false).commit();
+        if (getBoolen(Keys.first_launch,true)) {
+            putBoolen(Keys.first_launch,false);
             return true;
         }
         return false;
+    }
+
+    public static void putBoolen(Keys key, boolean value) {
+        pref.edit().putBoolean(key.name(), value).apply();
+
+    }
+    public static boolean getBoolen(Keys key, boolean defaultValue) {
+      return   pref.getBoolean(key.name(),defaultValue);
+
     }
 
     public static void putString(Keys key, String value) {

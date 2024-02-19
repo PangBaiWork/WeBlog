@@ -110,7 +110,7 @@ public class Init {
 
     void installHexo(Activity ct) {
         ThreadUtil.thread(() -> {
-            cmdExer.execute("npm config set registry http://mirrors.cloud.tencent.com/npm/", false);
+            cmdExer.execute("npm Config set registry http://mirrors.cloud.tencent.com/npm/", false);
             boolean result = cmdExer.execute("npm install -g hexo-cli", false) == 0;
             dialog.dismiss();
             util.runOnUiThread(() -> {

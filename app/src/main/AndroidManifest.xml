@@ -9,16 +9,22 @@
     <application
         android:name=".global.application"
         android:allowBackup="true"
+        android:icon="@drawable/weblog"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:icon="@drawable/weblog"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
+
         <service
             android:name=".project.MainService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".activity.MainActivity"
@@ -35,9 +41,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="WeBlog"
             android:name=".activity.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="WeBlog"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
     </application>

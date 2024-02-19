@@ -19,7 +19,6 @@
         app:subtitle="Blog"
         app:subtitleTextColor="?attr/colorPrimary"
         app:title="WeBlog"
-
         tools:openDrawer="start" />
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressbar"
@@ -45,6 +44,7 @@
             android:layout_height="wrap_content"
             android:baselineAligned="true"
             android:fitsSystemWindows="false"
+            android:id="@+id/float_action_layout"
            android:layout_gravity="bottom|end"
             android:layout_marginBottom="50dp"
             android:orientation="vertical">

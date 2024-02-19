@@ -84,7 +84,7 @@ public final class ExtraKeysView extends GridLayout {
                 }
             }
         } catch (JSONException e) {
-            Toast.makeText(getContext(), "Could not load the extra-keys property from the config: " + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Could not load the extra-keys property from the Config: " + e.toString(), Toast.LENGTH_LONG).show();
             // Log.e("termux", "Error loading props", e);
             mExtraKeys = new String[0][];
         }

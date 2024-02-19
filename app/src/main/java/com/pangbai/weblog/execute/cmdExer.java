@@ -39,6 +39,7 @@ public class cmdExer {
 
 
     public static int execute(String command, boolean su, boolean wait) {
+        result="";
         BufferedReader reader = null;
         String shell;
         if (su)
@@ -69,10 +70,8 @@ public class cmdExer {
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-
-
                 Log.e("exer", line);
-                result += line;
+                result += line+"\n";
                 lastLine = line;
             }
 

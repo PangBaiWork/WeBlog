@@ -23,6 +23,7 @@ import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ArticleCreateBinding;
 import com.pangbai.weblog.global.ThemeUtil;
 import com.pangbai.weblog.preference.PrefManager;
+import com.pangbai.weblog.preference.Config;
 import com.pangbai.weblog.project.HexoPostCreate;
 import com.pangbai.weblog.project.Project;
 import com.pangbai.weblog.project.ProjectManager;
@@ -182,18 +183,22 @@ public class ArticleCreateFragment extends BottomSheetDialogFragment implements 
             tmp += ".md";
 
         } else {
+            boolean isToMd5= Config.getBool(PrefManager.Keys.bl_artical_title_to_md5);
+            if (isToMd5){
             try {
                 MessageDigest md = MessageDigest.getInstance("MD5"); // 选择所需的算法（这里使用md5）
                 byte[] hashBytes = md.digest(name.getBytes()); // 将输入转换为字节数组并计算Hash值
                 for (byte b : hashBytes) {
                     tmp += Integer.toString((b & 0xff) + 0x100, 16).substring(1); // 将每个字节转换成十六进制表示形式
                 }
-                tmp += ".md";
+
             } catch (Exception e) {
             }
-
+            }else {
+                tmp+=name;
+            }
+            tmp += ".md";
         }
-
 
         return projectPath + "/" + tmp;
     }

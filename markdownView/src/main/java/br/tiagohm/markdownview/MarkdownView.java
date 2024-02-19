@@ -17,7 +17,7 @@ import android.widget.ScrollView;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.orhanobut.logger.Logger;
+
 import com.vladsch.flexmark.Extension;
 import com.vladsch.flexmark.ast.AutoLink;
 import com.vladsch.flexmark.ast.FencedCodeBlock;
@@ -273,7 +273,7 @@ public class MarkdownView extends WebView {
 
         html = sb.toString();
 
-        Logger.d(html);
+
 
         loadDataWithBaseURL("",
                 html,

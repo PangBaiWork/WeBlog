@@ -30,6 +30,7 @@ import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.Init;
 import com.pangbai.weblog.project.ProjectManager;
 import com.pangbai.weblog.tool.ThreadUtil;
+import com.pangbai.weblog.tool.util;
 import com.pangbai.weblog.view.FileListSelect;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -50,6 +51,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.createProject.setOnClickListener(this);
         binding.pullProject.setOnClickListener(this);
         binding.openTerminal.setOnClickListener(this);
+        binding.setting.setOnClickListener(this);
+        binding.donate.setOnClickListener(this);
+
 
     }
 
@@ -133,9 +137,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.open_terminal) {
             openTerminal();
         } else if (id == R.id.setting) {
-            Snackbar.make(binding.getRoot(), "Todo..", Snackbar.LENGTH_SHORT).show();
+            util.startActivity(this, SettingsActivity.class,false);
         } else if (id == R.id.donate) {
-            Snackbar.make(binding.getRoot(), "Todo..", Snackbar.LENGTH_SHORT).show();
+           // Snackbar.make(binding.getRoot(), "Todo..", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.donate_url)));
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivity(Intent.createChooser(intent, "GITHUB"));
         }
 
     }
