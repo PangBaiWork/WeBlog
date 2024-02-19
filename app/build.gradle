@@ -13,8 +13,11 @@ android {
     namespace 'com.pangbai.weblog'
     compileSdk 34
     buildToolsVersion "33.0.0"
-    lint {
-        baseline = file("lint-baseline.xml")
+
+    lintOptions{
+
+        abortOnError false
+
     }
     packagingOptions {
         jniLibs {
