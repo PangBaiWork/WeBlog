@@ -31,6 +31,7 @@ import com.pangbai.weblog.tool.util;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.Set;
@@ -171,7 +172,7 @@ public class ArticleCreateFragment extends BottomSheetDialogFragment implements 
         String tmp = "";
         if (name.isBlank()) {
             //nothing
-        } else if (Charset.forName("US-ASCII").newEncoder().canEncode(name)) {
+        } else if (StandardCharsets.US_ASCII.newEncoder().canEncode(name)) {
             String[] arr = name.split(" ");
             for (int i = 0; i < arr.length; i++) {
                 if (arr[i].isBlank())

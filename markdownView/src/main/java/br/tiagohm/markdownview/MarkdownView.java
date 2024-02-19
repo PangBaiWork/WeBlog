@@ -319,7 +319,7 @@ public class MarkdownView extends WebView {
                                 final int index = url.indexOf('@');
 
                                 if (index >= 0) {
-                                    String[] dimensions = url.substring(index + 1, url.length()).split("\\|");
+                                    String[] dimensions = url.substring(index + 1).split("\\|");
                                     url = url.substring(0, index);
 
                                     if (dimensions.length == 2) {

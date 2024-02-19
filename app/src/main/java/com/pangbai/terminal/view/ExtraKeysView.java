@@ -84,7 +84,7 @@ public final class ExtraKeysView extends GridLayout {
                 }
             }
         } catch (JSONException e) {
-            Toast.makeText(getContext(), "Could not load the extra-keys property from the Config: " + e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Could not load the extra-keys property from the Config: " + e, Toast.LENGTH_LONG).show();
             // Log.e("termux", "Error loading props", e);
             mExtraKeys = new String[0][];
         }
@@ -170,7 +170,7 @@ public final class ExtraKeysView extends GridLayout {
         ToggleButton button = null;
     }
     
-    private Map<SpecialButton, SpecialButtonState> specialButtons = new HashMap<SpecialButton, SpecialButtonState>() {{
+    private final Map<SpecialButton, SpecialButtonState> specialButtons = new HashMap<SpecialButton, SpecialButtonState>() {{
         put(SpecialButton.CTRL, new SpecialButtonState());
         put(SpecialButton.ALT, new SpecialButtonState());
         put(SpecialButton.FN, new SpecialButtonState());

@@ -38,7 +38,7 @@ public final class SuperTerminalView extends TerminalView {
 
     public  SuperTerminalView terminal ;
     public TerminalSessionClient mTerminalSessionClient;
-    private TerminalViewClient mTerminalViewClient;
+    private final TerminalViewClient mTerminalViewClient;
    // private boolean set_done = false;
    // private boolean run_done = false;
    // static int  currentsize=30;

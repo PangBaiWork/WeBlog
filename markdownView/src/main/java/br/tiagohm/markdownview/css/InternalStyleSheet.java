@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class InternalStyleSheet implements StyleSheet {
     private static final String NO_MEDIA_QUERY = "NO_MEDIA_QUERY";
-    private Map<String, Map<String, Map<String, String>>> mRules = new LinkedHashMap<>();
-    private Map<String, String> mFontFaces = new LinkedHashMap<>();
+    private final Map<String, Map<String, Map<String, String>>> mRules = new LinkedHashMap<>();
+    private final Map<String, String> mFontFaces = new LinkedHashMap<>();
     private String currentMediaQuery;
 
     public InternalStyleSheet() {
@@ -97,7 +97,7 @@ public class InternalStyleSheet implements StyleSheet {
 
     @Override
     public String toHTML() {
-        return "<style>\n" + toString() + "\n</style>\n";
+        return "<style>\n" + this + "\n</style>\n";
     }
 
     private Map<String, Map<String, String>> getCurrentMediaQuery() {

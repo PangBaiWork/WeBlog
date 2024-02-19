@@ -36,15 +36,13 @@ public class MarkExtension implements Parser.ParserExtension, HtmlRenderer.HtmlR
 
     @Override
     public void extend(HtmlRenderer.Builder rendererBuilder, String rendererType) {
-        switch (rendererType) {
-            case "HTML":
-                rendererBuilder.nodeRendererFactory(new NodeRendererFactory() {
-                    @Override
-                    public NodeRenderer create(DataHolder options) {
-                        return new MarkNodeRenderer(options);
-                    }
-                });
-                break;
+        if (rendererType.equals("HTML")) {
+            rendererBuilder.nodeRendererFactory(new NodeRendererFactory() {
+                @Override
+                public NodeRenderer create(DataHolder options) {
+                    return new MarkNodeRenderer(options);
+                }
+            });
         }
     }
 }

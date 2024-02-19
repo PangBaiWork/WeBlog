@@ -32,7 +32,6 @@ public abstract class PostCreate {
                 file.createNewFile();
                 writer = new PrintWriter(new FileWriter(file), true);
             } catch (Exception e) {
-                return ;
             }
         }
 

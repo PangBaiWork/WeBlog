@@ -15,7 +15,7 @@ import java.util.List;
  * author: 敬往事一杯酒
  */
 public class MainViewPagerAdapter extends PagerAdapter {
-    private List<View> mList;
+    private final List<View> mList;
     public MainViewPagerAdapter(List<View> list){
         this.mList = list;
     }

@@ -27,7 +27,7 @@ import br.tiagohm.markdownview.Utils;
 import br.tiagohm.markdownview.ext.twitter.Twitter;
 
 public class TwitterNodeRenderer implements NodeRenderer {
-    private ConditionVariable mCondition = new ConditionVariable(false);
+    private final ConditionVariable mCondition = new ConditionVariable(false);
     private String mHtml = null;
 
     public TwitterNodeRenderer(DataHolder options) {
@@ -96,7 +96,7 @@ public class TwitterNodeRenderer implements NodeRenderer {
     }
 
     private class LoadTweetRunnable implements Runnable {
-        private String mUrl;
+        private final String mUrl;
 
         public LoadTweetRunnable(String url) {
             mUrl = url;

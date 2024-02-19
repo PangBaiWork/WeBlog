@@ -67,7 +67,7 @@ public class Init {
                 "ANDROID_DATA=/data",
                 "ANDROID_ROOT=/system"
         };
-        this.envp = envp;
+        Init.envp = envp;
 
 
         if (!new File(binDir).exists()) {
@@ -129,7 +129,7 @@ public class Init {
 
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
+    private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };

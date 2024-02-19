@@ -33,10 +33,8 @@ public class LabelExtension implements Parser.ParserExtension, HtmlRenderer.Html
 
     @Override
     public void extend(HtmlRenderer.Builder rendererBuilder, String rendererType) {
-        switch (rendererType) {
-            case "HTML":
-                rendererBuilder.nodeRendererFactory(new LabelNodeRenderer.Factory());
-                break;
+        if (rendererType.equals("HTML")) {
+            rendererBuilder.nodeRendererFactory(new LabelNodeRenderer.Factory());
         }
     }
 }

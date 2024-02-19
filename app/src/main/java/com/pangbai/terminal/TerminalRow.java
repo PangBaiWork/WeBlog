@@ -243,7 +243,7 @@ public final class TerminalRow {
         return true;
     }
 
-    public final long getStyle(int column) {
+    public long getStyle(int column) {
         return mStyle[column];
     }
 

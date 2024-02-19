@@ -33,10 +33,8 @@ public class KeystrokeExtension implements Parser.ParserExtension, HtmlRenderer.
 
     @Override
     public void extend(HtmlRenderer.Builder rendererBuilder, String rendererType) {
-        switch (rendererType) {
-            case "HTML":
-                rendererBuilder.nodeRendererFactory(new KeystrokeNodeRenderer.Factory());
-                break;
+        if (rendererType.equals("HTML")) {
+            rendererBuilder.nodeRendererFactory(new KeystrokeNodeRenderer.Factory());
         }
     }
 }

@@ -96,12 +96,8 @@ public final class TerminalSession extends TerminalOutput {
      */
 public void writeDe(String com){
 		byte[] buffer = null;
-		try
-		{
-		buffer = com.getBytes("UTF8");
-		}
-	catch (UnsupportedEncodingException e) {}
-	if(buffer==null)
+    buffer = com.getBytes(StandardCharsets.UTF_8);
+    if(buffer==null)
 		return;
 	FileOutputStream termOut = new FileOutputStream(wrapFileDescriptor(mTerminalFileDescriptor, mClient));
 	try {
@@ -261,7 +257,7 @@ public void writeDe(String com){
     }
 
     /** Notify the {@link #mClient} that the screen has changed. */
-    protected void notifyScreenUpdate() {
+    private void notifyScreenUpdate() {
         mClient.onTextChanged(this);
     }
 

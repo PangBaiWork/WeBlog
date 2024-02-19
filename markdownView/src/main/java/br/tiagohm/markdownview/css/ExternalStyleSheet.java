@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 public class ExternalStyleSheet implements StyleSheet {
-    private String mUrl;
+    private final String mUrl;
     private String mMediaQuery;
 
     public ExternalStyleSheet(String url) {

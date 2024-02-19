@@ -52,7 +52,7 @@ public class cmdExer {
         if (cwd != null)
             processBuilder.directory(new File(cwd));
         for (String env : Init.envp) {
-            String tmp[] = getByEnv(env);
+            String[] tmp = getByEnv(env);
             processBuilder.environment().put(tmp[0], tmp[1]);
         }
 
