@@ -188,8 +188,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         boolean cmd = cmdExer.executeScripts(selets, project.scriptPath, true) == 0;
                         runOnUiThread(() -> {
                             binding.progressbar.setIndeterminate(false);
-                            if (cmd)
+                            if (cmd) {
                                 Snackbar.make(binding.getRoot(), "Success", Snackbar.LENGTH_SHORT).show();
+                            }else {
+                                DialogUtils.showConfirmationDialog(this,getString(R.string.scripts_execution_failed),cmdExer.result,null,null);
+                            }
                         });
                     });
 

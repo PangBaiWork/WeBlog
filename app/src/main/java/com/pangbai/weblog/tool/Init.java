@@ -79,6 +79,7 @@ public class Init {
                     cmdExer.execute(libDir + "/links.sh " + libDir, false, true);
                     cmdExer.execute(busyboxPath + " tar Jxf " + libDir + "/env -C /", false, true);
                     cmdExer.execute(busyboxPath + " --install -s " + binDir, false, true);
+                    new File(filesDirPath+"/home").mkdirs();
                     dialog.dismiss();
                     util.runOnUiThread(() -> {
                         DialogUtils.showConfirmationDialog(ct, "Environment installation successful", ct.getString(R.string.ask_install_hexo),

@@ -47,4 +47,5 @@
     <string name="close_project">关闭项目</string>
     <string name="environment">环境</string>
     <string name="setting">设置</string>
+    <string name="scripts_execution_failed">脚本执行失败</string>
 </resources>

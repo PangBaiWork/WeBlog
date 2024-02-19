@@ -1,7 +1,5 @@
 plugins {
     id 'com.android.application'
-
-
 }
 // Inside each module using kotlin
 
@@ -12,7 +10,7 @@ plugins {
 android {
     namespace 'com.pangbai.weblog'
     compileSdk 34
-    buildToolsVersion "33.0.0"
+   // buildToolsVersion "33.0.0"
 
     lintOptions{
 
@@ -97,9 +95,7 @@ android {
 
 
     }
-    composeOptions {
-        //  kotlinCompilerExtensionVersion = "1.4.5"
-    }
+
 
 }
 

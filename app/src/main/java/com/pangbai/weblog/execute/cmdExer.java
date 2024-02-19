@@ -3,6 +3,7 @@ package com.pangbai.weblog.execute;
 
 import static com.pangbai.weblog.tool.util.getByEnv;
 
+import android.os.Build;
 import android.system.Os;
 import android.util.Log;
 
@@ -25,7 +26,7 @@ public class cmdExer {
         path += "/";
         int size = name.size();
         for (int i = 0; i < size; i++) {
-            cmd += "sh "+ path + name.get(i);
+            cmd += "sh " + path + name.get(i);
             if (i != size - 1) cmd += " && ";
         }
         return execute(cmd, false, wait);
@@ -37,9 +38,8 @@ public class cmdExer {
     }
 
 
-
     public static int execute(String command, boolean su, boolean wait) {
-        result="";
+        result = "";
         BufferedReader reader = null;
         String shell;
         if (su)
@@ -59,8 +59,8 @@ public class cmdExer {
         // 设置环境变量
         // environment.put("LD_LIBRARY_PATH", Init.filesDirPath + "/usr/lib");
 
-            processBuilder.command(shell, "-c", command);
-
+        processBuilder.command(shell, "-c", command);
+       processBuilder.redirectErrorStream(true);
         try {
 
 
@@ -71,12 +71,13 @@ public class cmdExer {
             String line;
             while ((line = reader.readLine()) != null) {
                 Log.e("exer", line);
-                result += line+"\n";
+                result += line + "\n";
                 lastLine = line;
             }
 
             return process.waitFor();
         } catch (IOException | InterruptedException e) {
+            result += e.getMessage();
             e.printStackTrace();
             return -1;
         } finally {
