@@ -81,7 +81,7 @@ android {
     }
     externalNativeBuild {
         /* cmake {
-             path file('src/main/cpp/CMakeLists.txt')
+             path file('src/main/cpp/CMakeL启动的时候没弹权限申请ists.txt')
              version '3.22.1'
          }*/
         ndkBuild {
@@ -104,8 +104,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation "androidx.compose.material3:material3:1.2.0"
     implementation 'androidx.preference:preference:1.2.1'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-
+   debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+    debugImplementation  'cat.ereza:customactivityoncrash:2.4.0'
 
     implementation(platform("io.github.Rosemoe.sora-editor:bom:0.22.1"))
     implementation("io.github.Rosemoe.sora-editor:editor")

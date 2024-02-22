@@ -34,10 +34,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <io.github.rosemoe.sora.widget.CodeEditor
+        <com.pangbai.weblog.editor.Editor
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-        android:layout_marginBottom="45dp"
+            android:layout_marginBottom="45dp"
             android:id="@+id/editor"/>
         <LinearLayout
             android:layout_width="wrap_content"

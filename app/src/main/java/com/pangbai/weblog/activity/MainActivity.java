@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     void setEditor() {
         binding.editor.setCursorAnimationEnabled(false);
         binding.editSymbol.init(binding.editor);
+        //binding.editor.getProps().disallowSuggestions=true;
+
         binding.editor.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             // keyboard listener
             boolean isUndoDisplay = Config.getBool(PrefManager.Keys.bl_interface_undo_button_display);

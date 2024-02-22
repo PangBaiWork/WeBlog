@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 openProject(selectProject);
             });
         } else if (id == R.id.open_terminal) {
-            openTerminal();
+          openTerminal();
         } else if (id == R.id.setting) {
             util.startActivity(this, SettingsActivity.class,false);
         } else if (id == R.id.donate) {
