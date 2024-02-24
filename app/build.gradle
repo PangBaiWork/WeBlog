@@ -10,9 +10,9 @@ plugins {
 android {
     namespace 'com.pangbai.weblog'
     compileSdk 34
-   // buildToolsVersion "33.0.0"
+    // buildToolsVersion "33.0.0"
 
-    lintOptions{
+    lintOptions {
 
         abortOnError false
 
@@ -53,6 +53,8 @@ android {
             keyPassword '123456'
             storeFile file('weblog.jks')
             storePassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
 
         }
         debug {
@@ -60,6 +62,8 @@ android {
             keyPassword '123456'
             storeFile file('weblog.jks')
             storePassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
 
         }
     }
@@ -104,8 +108,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation "androidx.compose.material3:material3:1.2.0"
     implementation 'androidx.preference:preference:1.2.1'
-   debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-    debugImplementation  'cat.ereza:customactivityoncrash:2.4.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+    debugImplementation 'cat.ereza:customactivityoncrash:2.4.0'
 
     implementation(platform("io.github.Rosemoe.sora-editor:bom:0.22.1"))
     implementation("io.github.Rosemoe.sora-editor:editor")
