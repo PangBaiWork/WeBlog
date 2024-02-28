@@ -106,9 +106,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setLayout();
         setRecycleView();
         setTabLayout();
-        binding.editor.setText("No file be Displayed\n" + getString(R.string.how_to_open_terminal));
+
         setEditor();
         setNavigation();
+
+        String path = PrefManager.getString(PrefManager.Keys.current_file, "");
+        File file = new File(path);
+
+        if (file.exists()){
+            setCodeText(file);
+            currentFile=file;
+            filesListAdapter.setList(currentFile.getParentFile());
+
+        } else {
+            binding.editor.setText("No file be Displayed\n" + getString(R.string.how_to_open_terminal));
+
+        }
         //   setCodeText(new File(project.getProjectPath()));
 
 
@@ -158,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             try {
                 editorText = ContentIO.createFrom(new FileReader(file));
                 currentFile = file;
+                PrefManager.putString(PrefManager.Keys.current_file, currentFile.getAbsolutePath());
                 runOnUiThread(() -> {
                     binding.editor.setText(editorText, true, null);
                     if (IO.isMdFile(currentFile)) markdown.loadMarkdownFromFile(currentFile);
@@ -181,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         ///   SearchHandle search= (SearchHandle) ((MenuItem) binding.toolbar.findViewById(R.id.menu_search)).getActionView();
-         handle= new SearchHandle(binding.editor.getSearcher());
-          handle.bind(binding.searchBar);
+        handle = new SearchHandle(binding.editor.getSearcher());
+        handle.bind(binding.searchBar);
 
         binding.toolbar.setOnMenuItemClickListener(item -> {
 
@@ -440,9 +454,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    protected void onDestroy() {
-        binding.editor.release();
-        super.onDestroy();
-    }
+
 }

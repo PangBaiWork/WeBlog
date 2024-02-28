@@ -13,6 +13,7 @@ public class PrefManager {
         tags,
         category,
         current_project,
+        current_file,
         first_launch,
         bl_interface_undo_button_display,
         bl_artical_title_to_md5
