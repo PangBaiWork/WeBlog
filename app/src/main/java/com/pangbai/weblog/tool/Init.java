@@ -1,6 +1,7 @@
 package com.pangbai.weblog.tool;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.app.Dialog;
@@ -22,8 +23,13 @@ import com.pangbai.weblog.R;
 import com.pangbai.weblog.execute.cmdExer;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import br.tiagohm.markdownview.Utils;
+import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
+import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
 
 public class Init {
 
@@ -37,18 +43,23 @@ public class Init {
     public static String busyboxPath, shPath;
     public static String[] envp;
     final public static String sdcardPath = "/storage/emulated/0/";
+    final public static String linker = "/system/bin/linker64";
     public static String keyPath;
+    boolean result;
 
     AlertDialog dialog;
+    public static String systemShell = "/system/bin/sh";
 
     public Init(Activity ct) {
 
         File files = ct.getFilesDir();
-        libDir = ct.getApplicationInfo().nativeLibraryDir;
-        busyboxPath = libDir + "/busybox";
+
 
         filesDirPath = files.getAbsolutePath();
+        libDir = filesDirPath + "/usr/lib";
         binDir = filesDirPath + "/usr/bin";
+        // busyboxPath =  ct.getApplicationInfo().nativeLibraryDir + "/busybox";
+        busyboxPath = binDir + "/busybox";
         shPath = binDir + "/sh";
         nodeDir = binDir + "/node";
         weblogDir = filesDirPath + "/weblog";
@@ -56,7 +67,7 @@ public class Init {
         String[] envp = {
                 //"PATH=" + "/system/bin"
                 "PATH=" + Init.binDir + ":/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/vendor/bin",
-                "LD_PRELOAD=" + Init.libDir + "/libexec",
+                "LD_PRELOAD=" + Init.libDir + "/libexec.so",
                 "HOME=" + Init.filesDirPath,
                 "TMPDIR=" + Init.filesDirPath + "/usr/tmp",
                 "PREFIX=" + Init.filesDirPath + "/usr",
@@ -76,21 +87,28 @@ public class Init {
             new Thread() {
                 @Override
                 public void run() {
-                    cmdExer.execute(libDir + "/links.sh " + libDir, false, true);
-                    cmdExer.execute(busyboxPath + " tar Jxf " + libDir + "/env -C /", false, true);
-                    cmdExer.execute(busyboxPath + " --install -s " + binDir, false, true);
-                    new File(filesDirPath+"/home").mkdirs();
+
+                    try {
+                        result = installEnv(ct);
+                    } catch (IOException | InterruptedException e) {
+                        result = false;
+                        // throw new RuntimeException(e);
+                    }
+
+
+                    new File(filesDirPath + "/home").mkdirs();
                     dialog.dismiss();
                     util.runOnUiThread(() -> {
-                        DialogUtils.showConfirmationDialog(ct, "Environment installation successful", ct.getString(R.string.ask_install_hexo),
-                                () -> {
-                                    dialog = DialogUtils.showLoadingDialog(ct, "Installing hexo");
-                                    installHexo(ct);
-                                }, () -> {
-                                    dialog.dismiss();
-                                    checkPermission(ct);
+                        if (result)
+                            DialogUtils.showConfirmationDialog(ct, "Environment installation successful", ct.getString(R.string.ask_install_hexo),
+                                    () -> {
+                                        dialog = DialogUtils.showLoadingDialog(ct, "Installing hexo");
+                                        installHexo(ct);
+                                    }, () -> {
+                                        dialog.dismiss();
+                                        checkPermission(ct);
 
-                                });
+                                    });
 
 
                     });
@@ -99,12 +117,41 @@ public class Init {
                 }
             }.start();
 
-        } else if (!checkLink(nodeDir)) {
-            Log.e("weblog", nodeDir);
-            //cmdExer.execute("sh " + weblogDir + "/links.sh " + libDir, false, false);
-            cmdExer.execute(libDir + "/links.sh " + libDir, false, true);
-            cmdExer.execute(busyboxPath + " --install -s " + binDir, false, false);
         }
+
+
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    boolean installEnv(Context context) throws IOException, InterruptedException {
+      //  String name = "busybox";
+        IO.copyAssetsDirToSDCard(context, "busybox", binDir);
+        IO.copyAssetsDirToSDCard(context, "libexec.so", libDir);
+        new File(busyboxPath).setExecutable(true);
+        cmdExer.setCwd(Init.binDir);
+        // cmdExer.execute(busyboxPath + " --install -s " + binDir, false, true);
+        cmdExer.execute("ln -s busybox env", false, false);
+        cmdExer.execute("ln -s busybox sh", false, false);
+        cmdExer.setCwd(Init.filesDirPath);
+        cmdExer.execute("tar -xJf - -C /", false, false);
+
+        OutputStream outputStream = cmdExer.process.getOutputStream();
+        FileProviderRegistry.getInstance().addFileProvider(new AssetsFileResolver(context.getAssets()));
+        InputStream inputStream = FileProviderRegistry.getInstance().tryGetInputStream("env.tar.xz");
+        byte[] buffer = new byte[2048];
+        int bytesRead;
+        while (true) {
+
+            assert inputStream != null;
+            if ((bytesRead = inputStream.read(buffer)) == -1) break;
+
+            outputStream.write(buffer, 0, bytesRead);
+
+        }
+        inputStream.close();
+        outputStream.close();
+        //  int exit = cmdExer.process.waitFor();
+        return cmdExer.process.waitFor()==0;
 
 
     }
@@ -123,10 +170,6 @@ public class Init {
     }
 
 
-    boolean checkLink(String link) {
-        int result = cmdExer.execute("[ -e " + link + " ] && " + "[ -L " + link + " ]", false, true);
-        return result == 0;
-    }
 
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;

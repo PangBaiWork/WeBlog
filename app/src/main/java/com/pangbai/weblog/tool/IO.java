@@ -23,12 +23,17 @@ public class IO {
                 // finalByte= inputStream.available();
                 byte[] mByte = new byte[1024];
                 int bt = 0;
-                File file = new File(sdCardPath + File.separator + assetsDirName.substring(assetsDirName.lastIndexOf('/')));
-
+                int index=assetsDirName.lastIndexOf('/');
+                File file;
+                if (index!=-1) {
+                    file = new File(sdCardPath + File.separator + assetsDirName.substring(index));
+                }else {
+                    file = new File(sdCardPath + File.separator + assetsDirName);
+                }
+                File dir=new File(sdCardPath);
+                if (!dir.exists())dir.mkdirs();
                 if (!file.exists()) {
                     file.createNewFile();
-                } else {
-                    return;
                 }
                 FileOutputStream fos = new FileOutputStream(file);
                 while ((bt = inputStream.read(mByte)) != -1) {

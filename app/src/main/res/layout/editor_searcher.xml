@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface"
+    tools:ignore="MissingDefaultResource">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/article_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+
+        android:minHeight="45dp"
+        android:padding="5dp" />
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="45dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/SearchButton"
+            android:id="@+id/search_previous"
+            android:text="@string/search_bt_previous" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/SearchButton"
+            android:id="@+id/search_next"
+            android:text="@string/search_bt_next" />
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/SearchButton"
+            android:id="@+id/search_replace"
+            android:text="@string/search_bt_replace" />
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/SearchButton"
+            android:id="@+id/search_close"
+            android:text="@string/search_bt_close" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -12,6 +12,9 @@
         android:id="@+id/menu_save"
         android:title="@string/save"/>
     <item
+        android:id="@+id/menu_search"
+        android:title="@string/search"/>
+    <item
         android:id="@+id/menu_run"
         android:title="Run"
         android:icon="@drawable/ic_run"

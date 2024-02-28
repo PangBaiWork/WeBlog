@@ -75,4 +75,11 @@
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <string name="scripts_execution_failed">Scripts execution Failed</string>
+    <string name="search">Search</string>
+    <string name="search_in_editor">Search text</string>
+    <string name="search_replace">Replace all :</string>
+    <string name="search_bt_previous">Previous</string>
+    <string name="search_bt_next">Next</string>
+    <string name="search_bt_replace">Replace</string>
+    <string name="search_bt_close">Close</string>
 </resources>

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -76,9 +76,14 @@
             app:behavior_hideable="false"
             app:behavior_peekHeight="45dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+       <include
+           android:visibility="gone"
+           android:id="@+id/search_bar"
+           layout="@layout/editor_searcher"/>
          <HorizontalScrollView
              android:layout_width="match_parent"
              android:layout_height="wrap_content">
+
             <com.pangbai.weblog.view.SymInputView
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"

@@ -48,4 +48,11 @@
     <string name="environment">环境</string>
     <string name="setting">设置</string>
     <string name="scripts_execution_failed">脚本执行失败</string>
+    <string name="search">搜索</string>
+    <string name="search_in_editor">搜索文本</string>
+    <string name="search_replace">"全部替换: "</string>
+    <string name="search_bt_previous">上一个</string>
+    <string name="search_bt_next">下一个</string>
+    <string name="search_bt_replace">替换</string>
+    <string name="search_bt_close">关闭</string>
 </resources>

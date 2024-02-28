@@ -24,7 +24,7 @@ android {
     }
     defaultConfig {
         applicationId "com.pangbai.weblog"
-        minSdk 24
+        minSdk 26
         //noinspection EditedTargetSdkVersion
         targetSdk 34
         ndkVersion "24.0.8215888"
@@ -80,6 +80,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+       // isCoreLibraryDesugaringEnabled true
         //    kotlinCompilerExtensionVersion = "1.1.1"
 
     }
@@ -113,9 +114,8 @@ dependencies {
 
     implementation(platform("io.github.Rosemoe.sora-editor:bom:0.22.1"))
     implementation("io.github.Rosemoe.sora-editor:editor")
-
     implementation("io.github.Rosemoe.sora-editor:language-textmate")
-
+  //  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     // implementation("androidx.appcompat:appcompat:1.6.1")
 
     implementation project(path: ':markdownView')

@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.search.SearchView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -32,6 +33,7 @@ import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityMainBinding;
 import com.pangbai.weblog.databinding.FileListBinding;
 import com.pangbai.weblog.databinding.LayoutTerminalBinding;
+import com.pangbai.weblog.editor.SearchHandle;
 import com.pangbai.weblog.editor.TextMate;
 import com.pangbai.weblog.execute.BlogCmd;
 import com.pangbai.weblog.execute.HexoExer;
@@ -62,8 +64,12 @@ import java.util.List;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
+import io.github.rosemoe.sora.event.EventReceiver;
+import io.github.rosemoe.sora.event.PublishSearchResultEvent;
+import io.github.rosemoe.sora.event.Unsubscribe;
 import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.text.ContentIO;
+import io.github.rosemoe.sora.widget.EditorSearcher;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Project project;
     Process livePreview;
     FilesListAdapter filesListAdapter;
+    SearchHandle handle;
 
     @SuppressLint("ResourceType")
     @Override
@@ -145,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     void setCodeText(File file) {
+        handle.stopSearch();
         TextMate.setLanguage(binding.editor, file.getName());
         ThreadUtil.thread(() -> {
             try {
@@ -172,9 +180,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.drawerLayout.addDrawerListener(new DrawerAnim(binding.navigationView));
 
 
-        //状态栏中的文字颜色和图标颜色，需要android系统6.0以上，而且目前只有一种可以修改（一种是深色，一种是浅色即白色）
-        //修改为深色，因为我们把状态栏的背景色修改为主题色白色，默认的文字及图标颜色为白色，导致看不到了。
-
+        ///   SearchHandle search= (SearchHandle) ((MenuItem) binding.toolbar.findViewById(R.id.menu_search)).getActionView();
+         handle= new SearchHandle(binding.editor.getSearcher());
+          handle.bind(binding.searchBar);
 
         binding.toolbar.setOnMenuItemClickListener(item -> {
 
@@ -192,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             binding.progressbar.setIndeterminate(false);
                             if (cmd) {
                                 Snackbar.make(binding.getRoot(), "Success", Snackbar.LENGTH_SHORT).show();
-                            }else {
-                                DialogUtils.showConfirmationDialog(this,getString(R.string.scripts_execution_failed),cmdExer.result,null,null);
+                            } else {
+                                DialogUtils.showConfirmationDialog(this, getString(R.string.scripts_execution_failed), cmdExer.result, null, null);
                             }
                         });
                     });
@@ -208,6 +216,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 binding.editor.redo();
             } else if (id == R.id.menu_save) {
                 saveFile();
+            } else if (id == R.id.menu_search) {
+
+                DialogUtils.showInputDialog(this, getString(R.string.search_in_editor), userInput -> {
+                    binding.searchBar.getRoot().setVisibility(View.GONE);
+                    binding.editor.getSearcher().search(userInput, new EditorSearcher.SearchOptions(true, true));
+                    binding.progressbar.setIndeterminate(true);
+                    binding.editor.subscribeEvent(PublishSearchResultEvent.class, (event, unsubscribe) -> {
+                        if (!handle.isSearching())
+                            return;
+                        binding.progressbar.setIndeterminate(false);
+                        if (event.getSearcher().getMatchedPositionCount() == 0) {
+                            Snackbar.make(binding.getRoot(), "Text not found", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            binding.searchBar.getRoot().setVisibility(View.VISIBLE);
+                        }
+                    });
+                });
             }
             return false;
         });
@@ -384,14 +409,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             util.startActivity(this, HomeActivity.class, false);
             finish();
         } else if (id == R.id.global_setting) {
-            util.startActivity(this, SettingsActivity.class,false);
+            util.startActivity(this, SettingsActivity.class, false);
         } else if (id == R.id.global_env) {
-           Snackbar.make(binding.navigationView, "Checking", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(binding.navigationView, "Checking", Snackbar.LENGTH_SHORT).show();
             ThreadUtil.thread(() -> {
-              String res=  BlogCmd.checkEnvironment();
-              runOnUiThread(() -> {
-                  DialogUtils.showConfirmationDialog(this,getString(R.string.environment),res,null,null);
-              });
+                String res = BlogCmd.checkEnvironment();
+                runOnUiThread(() -> {
+                    DialogUtils.showConfirmationDialog(this, getString(R.string.environment), res, null, null);
+                });
             });
         }
         return false;
@@ -415,5 +440,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        binding.editor.release();
+        super.onDestroy();
+    }
 }

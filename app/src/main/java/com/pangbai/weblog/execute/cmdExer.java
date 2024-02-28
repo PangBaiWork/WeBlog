@@ -48,7 +48,7 @@ public class cmdExer {
             shell = "sh";
 
         ProcessBuilder processBuilder = new ProcessBuilder();
-        Map<String, String> environment = processBuilder.environment();
+       // Map<String, String> environment = processBuilder.environment();
         if (cwd != null)
             processBuilder.directory(new File(cwd));
         for (String env : Init.envp) {
@@ -59,20 +59,21 @@ public class cmdExer {
         // 设置环境变量
         // environment.put("LD_LIBRARY_PATH", Init.filesDirPath + "/usr/lib");
 
-        processBuilder.command(shell, "-c", command);
+        processBuilder.command(Init.linker,Init.busyboxPath,shell, "-c",command);
        processBuilder.redirectErrorStream(true);
+
         try {
 
-
-            process = processBuilder.start();
+             process = processBuilder.start();
             if (!wait)
                 return 0;
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                Log.e("exer", line);
+
                 result += line + "\n";
                 lastLine = line;
+                Log.e("exer", line);
             }
 
             return process.waitFor();
