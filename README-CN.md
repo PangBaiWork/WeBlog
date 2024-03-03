@@ -26,4 +26,4 @@ Read this in other languages: [English](README.md)  , [简体中文](README-CN.m
 [Busybox](https://busybox.net/)   
 ...  
 ## Preview
-[![Preview Video]( )](https://www.bilibili.com/blackboard/webplayer/mbplayer.html?aid=1651456877&bvid=BV1Uj421U7NF&cid=1457414409&p=1 Preview Video)
+[![Preview Video]( )](https://www.bilibili.com/blackboard/webplayer/mbplayer.html?aid=1651456877&bvid=BV1Uj421U7NF&cid=1457414409&p=1)

@@ -31,4 +31,4 @@ and preview blogs. GIT, terminal, custom Shell scripts，Create articles, tag ma
 [Busybox](https://busybox.net/)   
 ...  
 ## Preview
-[![Preview Video](http://img.youtube.com/vi/vPQjNEwXghk/0.jpg)](https://www.youtube.com/watch?v=vPQjNEwXghk Preview Video)
+[![Preview Video](http://img.youtube.com/vi/vPQjNEwXghk/0.jpg)](https://www.youtube.com/watch?v=vPQjNEwXghk)
