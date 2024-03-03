@@ -5,6 +5,8 @@ package com.pangbai.weblog.tool;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -59,6 +61,12 @@ public class util {
             if (s.equals(str))return true;
         }
         return false;
+    }
+
+    public static void copyToClipboard(Context context, CharSequence text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label", text);
+        clipboard.setPrimaryClip(clip);
     }
 
 

@@ -25,6 +25,7 @@ import com.pangbai.weblog.R;
 import com.pangbai.weblog.databinding.ActivityHomeBinding;
 import com.pangbai.weblog.databinding.LayoutTerminalBinding;
 import com.pangbai.weblog.execute.cmdExer;
+import com.pangbai.weblog.preference.PrefManager;
 import com.pangbai.weblog.project.Project;
 import com.pangbai.weblog.tool.DialogUtils;
 import com.pangbai.weblog.tool.Init;
@@ -154,6 +155,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     void openProject(Project project) {
+        PrefManager.putString(PrefManager.Keys.current_file,"");
         ProjectManager.saveCurrentProject(project);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

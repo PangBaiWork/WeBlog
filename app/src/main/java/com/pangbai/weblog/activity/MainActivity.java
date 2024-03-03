@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String path = PrefManager.getString(PrefManager.Keys.current_file, "");
         File file = new File(path);
 
-        if (file.exists()){
+        if (file.exists()) {
             setCodeText(file);
-            currentFile=file;
+            currentFile = file;
             filesListAdapter.setList(currentFile.getParentFile());
 
         } else {
@@ -215,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (cmd) {
                                 Snackbar.make(binding.getRoot(), "Success", Snackbar.LENGTH_SHORT).show();
                             } else {
-                                DialogUtils.showConfirmationDialog(this, getString(R.string.scripts_execution_failed), cmdExer.result, null, null);
+                                DialogUtils.showConfirmationDialog(this, getString(R.string.scripts_execution_failed), cmdExer.result, getString(android.R.string.copy), getString(R.string.cancle), () -> {
+                                    util.copyToClipboard(this, cmdExer.result);}, null);
                             }
                         });
                     });
@@ -322,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 // focus on cmdview;
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    if (tabLayout.getSelectedTabPosition() == 1) {
+                    if (tabLayout.getSelectedTabPosition() == 0) {
                         cmdBinding.terminal.requestFocus();
                     }
                 }
