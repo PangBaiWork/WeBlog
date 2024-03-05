@@ -34,9 +34,11 @@ import com.pangbai.weblog.tool.ThreadUtil;
 import com.pangbai.weblog.tool.util;
 import com.pangbai.weblog.view.FileListSelect;
 
+import java.util.Objects;
+
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityHomeBinding binding;
-    ActivityResultLauncher chooseFolder;
+
     boolean isTerminalOpen = false;
     Project selectProject;
 
@@ -69,6 +71,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.create_project) {
 
             select(file -> {
+                if (Objects.requireNonNull(file.list()).length != 0) {
+                    Snackbar.make(binding.getRoot(), "The folder should be empty", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
                 DialogUtils.showSingleSelectDialog(this, getString(R.string.select_blog_engine),ProjectManager.getTypeArray(), select -> {
                     selectProject = new Project(file.getName(), file.getAbsolutePath(), ProjectManager.Type.valueOf(select));
                     ProjectManager projectManager = new ProjectManager(selectProject);
@@ -93,12 +99,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         } else if (id == R.id.pull_project) {
-            select(file -> {
-                if (file.list().length != 0) {
-                    Snackbar.make(binding.getRoot(), "The folder should be empty", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
+
                 DialogUtils.showInputDialog(this, getString(R.string.clone_git), userInput -> {
+
+                    select(file -> {
+                        if (Objects.requireNonNull(file.list()).length != 0) {
+                            Snackbar.make(binding.getRoot(), "The folder should be empty", Snackbar.LENGTH_SHORT).show();
+                            return;
+                        }
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
                     ThreadUtil.thread(() -> {
                         boolean clone = cmdExer.execute("git clone " + userInput + " " + file.getAbsolutePath(), false) == 0;
@@ -121,8 +129,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         });
                     });
 
-
                 });
+
+
+
             });
         } else if (id == R.id.open_project) {
             select(file -> {
