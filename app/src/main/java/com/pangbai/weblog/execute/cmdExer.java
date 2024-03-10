@@ -58,8 +58,11 @@ public class cmdExer {
 
         // 设置环境变量
         // environment.put("LD_LIBRARY_PATH", Init.filesDirPath + "/usr/lib");
-
-        processBuilder.command(Init.linker,Init.busyboxPath,shell, "-c",command);
+      if (Init.android10) {
+          processBuilder.command(Init.linker, Init.busyboxPath, shell, "-c", command);
+      }else {
+          processBuilder.command(Init.busyboxPath,shell, "-c", command);
+      }
        processBuilder.redirectErrorStream(true);
 
         try {

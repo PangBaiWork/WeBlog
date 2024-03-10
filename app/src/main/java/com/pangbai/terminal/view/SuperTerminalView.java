@@ -85,8 +85,12 @@ public final class SuperTerminalView extends TerminalView {
     }
 
     public   void setTerminal(String cwd) {
-     String[] n = {Init.linker,Init.busyboxPath,"sh"};
-     setProcess(Init.linker, cwd, n,Init.envp, 0);
+    if (Init.android10) {
+        String[] n = {Init.linker, Init.busyboxPath, "sh"};
+        setProcess(Init.linker, cwd, n, Init.envp, 0);
+    }else {
+        setProcess(Init.busyboxPath, cwd,new String[] {"sh"}, Init.envp, 0);
+    }
      //   setProcess(Init.shell, cwd, null,new String[]{ "PATH=" + Init.binDir}, 0);
         runProcess();
         //cmdView.requestFocus();

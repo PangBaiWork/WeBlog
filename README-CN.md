@@ -1,4 +1,8 @@
 Read this in other languages: [English](README.md)  , [简体中文](README-CN.md),
+
+[![CI](https://github.com/Rosemoe/CodeEditor/actions/workflows/gradle.yml/badge.svg?event=push)](https://github.com/PangBaiWork/WeBlog/actions/workflows/main.yml)
+[![QQ](https://img.shields.io/badge/Join-QQ_Group-ff69b4)](https://qm.qq.com/q/1wJcBUfst2)
+----
 ## 引言 
 博客是什么？它是我们的另一片天地，在这里你可以说你想说的话，分享自己学到的新东西，美好的事，是温馨的小窝。
 它是不被世俗打扰的净土，没有人在这里教你做事，你可以倾心陈述一切。

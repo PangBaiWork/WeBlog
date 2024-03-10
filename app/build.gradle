@@ -13,9 +13,7 @@ android {
     // buildToolsVersion "33.0.0"
 
     lintOptions {
-
         abortOnError false
-
     }
     packagingOptions {
         jniLibs {
@@ -31,7 +29,8 @@ android {
         versionCode 2
         versionName "1.1"
         ndk {//让gradle知道ndk的配置
-            abiFilter "arm64-v8a"//so文件的平
+          //  abiFilter "arm64-v8a,"//so文件的平
+
         }
         vectorDrawables {
             useSupportLibrary true

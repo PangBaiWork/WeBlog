@@ -45,6 +45,7 @@ public class Init {
     final public static String sdcardPath = "/storage/emulated/0/";
     final public static String linker = "/system/bin/linker64";
     public static String keyPath;
+    final public static boolean android10=Build.VERSION.SDK_INT>=29;
     boolean result;
 
     AlertDialog dialog;
@@ -75,6 +76,7 @@ public class Init {
                 "PS1=\\[\\e[1\\;31m\\])➜ \\[\\e[1;36m\\]\\W\\[\\e[m\\] ",
                 "TERM=xterm-256color",
                 "LANG=en_US.UTF-8",
+                android10?"ANDROID10=1":"ANDROID10=0",
                 "ANDROID_DATA=/data",
                 "ANDROID_ROOT=/system"
         };
@@ -109,6 +111,9 @@ public class Init {
                                         checkPermission(ct);
 
                                     });
+                        else
+                            checkPermission(ct);
+
 
 
                     });

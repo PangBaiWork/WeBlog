@@ -186,8 +186,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
     @SuppressLint("NotifyDataSetChanged")
     public void setList(File files) {
         if (!files.exists() || !files.canRead()) {
-
-            Snackbar.make(parent, "Can Not Open This Folder", Snackbar.LENGTH_SHORT).show();
+            if (parent!=null) Snackbar.make(parent, "Can Not Open This Folder", Snackbar.LENGTH_SHORT).show();
 
             return;
         }
