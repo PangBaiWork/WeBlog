@@ -34,7 +34,4 @@ and preview blogs. GIT, terminal, custom Shell scripts，Create articles, tag ma
 [Termux](https://github.com/termux/termux-app)  
 [Busybox](https://busybox.net/)   
 ...  
-## Preview
-Loading...
-![Preview Video](doc/ui.gif)
-![Excution Video](doc/deploy.gif)
+## 

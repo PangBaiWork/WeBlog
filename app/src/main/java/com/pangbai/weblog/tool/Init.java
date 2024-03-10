@@ -137,6 +137,7 @@ public class Init {
         // cmdExer.execute(busyboxPath + " --install -s " + binDir, false, true);
         cmdExer.execute("ln -s busybox env", false, false);
         cmdExer.execute("ln -s busybox sh", false, false);
+        cmdExer.execute("ln -s busybox basename", false, false);
         cmdExer.setCwd(Init.filesDirPath);
         cmdExer.execute("tar -xJf - -C /", false, false);
 

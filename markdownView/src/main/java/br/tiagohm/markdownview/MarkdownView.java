@@ -1,5 +1,6 @@
 package br.tiagohm.markdownview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
@@ -7,6 +8,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -123,6 +125,8 @@ public class MarkdownView extends WebView {
     private boolean mEscapeHtml = true;
     private Object bean;
 
+
+
     public MarkdownView(Context context) {
         this(context, null);
     }
@@ -131,6 +135,7 @@ public class MarkdownView extends WebView {
         this(context, attrs, 0);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public MarkdownView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
@@ -168,6 +173,33 @@ public class MarkdownView extends WebView {
         mEscapeHtml = flag;
         return this;
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void destroyWebView() {
+        try {
+
+                ViewGroup parent = (ViewGroup) getParent();
+                if (parent != null) {
+                    parent.removeView(this);
+                }
+                setOnTouchListener(null);
+                setOnKeyListener(null);
+              setOnFocusChangeListener(null);
+               setWebChromeClient(null);
+                setWebViewClient(null);
+                getSettings().setJavaScriptEnabled(false);
+                loadUrl("about:blank");
+                onPause();
+                removeAllViews();
+               destroyDrawingCache();
+               destroy();
+
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public MarkdownView setEmojiRootPath(String path) {
         ((MutableDataHolder) OPTIONS).set(EmojiExtension.ROOT_IMAGE_PATH, path);

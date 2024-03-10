@@ -22,7 +22,7 @@ android {
     }
     defaultConfig {
         applicationId "com.pangbai.weblog"
-        minSdk 26
+        minSdk 24
         //noinspection EditedTargetSdkVersion
         targetSdk 34
         ndkVersion "24.0.8215888"

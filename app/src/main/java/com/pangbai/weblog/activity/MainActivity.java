@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         params.height = 400;
         params.width = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        markdown = new MarkdownView(this);
+        markdown = new MarkdownView(this.getApplicationContext());
         markdown.setLayoutParams(params);
 
         views.add(cmdBinding.getRoot());
@@ -455,5 +455,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        markdown.destroyWebView();
+        super.onDestroy();
+    }
 }

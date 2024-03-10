@@ -29,7 +29,4 @@ Read this in other languages: [English](README.md)  , [简体中文](README-CN.m
 [Termux](https://github.com/termux/termux-app)  
 [Busybox](https://busybox.net/)   
 ...  
-## Preview
-Loading...
-![软件预览](doc/ui.gif)
-![执行操作](doc/deploy.gif)
+## 快速开始
