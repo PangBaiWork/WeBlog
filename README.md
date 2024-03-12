@@ -1,6 +1,6 @@
 Read this in other languages: [English](README.md)  , [简体中文](README-CN.md)
 
-[![CI](https://github.com/Rosemoe/CodeEditor/actions/workflows/gradle.yml/badge.svg?event=push)](https://github.com/PangBaiWork/WeBlog/actions/workflows/main.yml)
+[![CI](https://github.com/PangBaiWork/WeBlog/actions/workflows/main.yml/badge.svg?event=push)](https://github.com/PangBaiWork/WeBlog/actions/workflows/main.yml)
 [![QQ](https://img.shields.io/badge/Join-QQ_Group-ff69b4)](https://qm.qq.com/q/1wJcBUfst2)
 ----
 ## Introduction 
