@@ -71,6 +71,7 @@ public class TextMate {
        else
            language=new EmptyLanguage();
 
+
         editor.setEditorLanguage(language);
     }
 
