@@ -458,8 +458,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         //binding.editor.setEditorLanguage(null);
-        binding.editor.release();
-        markdown.destroyWebView();
+        if (binding!=null) {
+            binding.editor.release();
+            markdown.destroyWebView();
+        }
         super.onDestroy();
     }
 }
