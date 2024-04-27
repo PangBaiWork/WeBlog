@@ -113,6 +113,8 @@ public class Init {
                             else
                                 checkPermission(ct);
 
+                            PrefManager.isFirstOrReinstall_flag=0;
+
 
                         });
 
@@ -123,6 +125,7 @@ public class Init {
         } else if (PrefManager.isFirstOrReinstall_flag==2) {
             //reinstalltion in case of test and update
             initScript(ct);
+            checkPermission(ct);
         }
 
 
@@ -181,7 +184,7 @@ public class Init {
 
     void installHexo(Activity ct) {
         ThreadUtil.thread(() -> {
-            cmdExer.execute("npm config set registry http://mirrors.cloud.tencent.com/npm/", false);
+            cmdExer.execute("npm config set registry https://npmreg.proxy.ustclug.org", false);
             boolean result = cmdExer.execute("npm install -g hexo-cli", false) == 0;
             dialog.dismiss();
             util.runOnUiThread(() -> {

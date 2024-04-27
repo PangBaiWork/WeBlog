@@ -27,7 +27,7 @@ public class PrefManager {
 
 
     public static void init(Context context) {
-        pref =PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref==null) pref =PreferenceManager.getDefaultSharedPreferences(context);
         Config.update();
 
     }

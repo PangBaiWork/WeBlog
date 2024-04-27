@@ -1,6 +1,10 @@
 package com.pangbai.weblog.execute;
 
 public abstract class BlogCmd {
+    public static String checkGitUpdate(){
+      cmdExer.execute("hugo version", false);
+      return null;
+    }
     public static String checkEnvironment() {
         boolean cmd;
         String res ;

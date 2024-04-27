@@ -38,10 +38,10 @@ public class IO {
                 FileOutputStream fos = new FileOutputStream(file);
                 while ((bt = inputStream.read(mByte)) != -1) {
                     fos.write(mByte, 0, bt);
-                    // dealtByte+=bt;
                 }
-                fos.getFD().sync();
+
                 fos.flush();
+                fos.getFD().sync();
                 inputStream.close();
                 fos.close();
             } else {
