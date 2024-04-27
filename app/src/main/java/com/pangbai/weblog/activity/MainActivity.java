@@ -25,7 +25,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.search.SearchView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -64,9 +63,7 @@ import java.util.List;
 
 import br.tiagohm.markdownview.MarkdownView;
 import br.tiagohm.markdownview.css.styles.Github;
-import io.github.rosemoe.sora.event.EventReceiver;
 import io.github.rosemoe.sora.event.PublishSearchResultEvent;
-import io.github.rosemoe.sora.event.Unsubscribe;
 import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.text.ContentIO;
 import io.github.rosemoe.sora.widget.EditorSearcher;
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         PrefManager.init(getApplicationContext());
         project = ProjectManager.getCurrentProject();
-        if (PrefManager.isFirstLaunch() || project == null || !new File(project.getProjectPath()).exists()) {
+        if (PrefManager.isFirstOrReinstall(this) || project == null || !new File(project.getProjectPath()).exists()) {
             util.startActivity(this, HomeActivity.class, false);
             finish();
             return;
@@ -202,14 +199,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             int id = item.getItemId();
             if (id == R.id.menu_run) {
-                File file = new File(project.scriptPath);
+                File file = new File(project.getScriptPath());
                 if (!file.exists()) return false;
                 DialogUtils.showMultiSelectDialog(this, getString(R.string.select_scripts), file.list(), selets -> {
                     binding.progressbar.setIndeterminate(true);
                     Snackbar.make(binding.getRoot(), "Excuting", Snackbar.LENGTH_SHORT).show();
 
                     ThreadUtil.thread(() -> {
-                        boolean cmd = cmdExer.executeScripts(selets, project.scriptPath, true) == 0;
+                        boolean cmd = cmdExer.executeScripts(selets, project.getScriptPath(), true) == 0;
                         runOnUiThread(() -> {
                             binding.progressbar.setIndeterminate(false);
                             if (cmd) {
@@ -415,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else if (id == R.id.project_script) {
-            new FileListSelect(this, getString(R.string.scripts_list), false, project.scriptPath, file -> {
+            new FileListSelect(this, getString(R.string.scripts_list), false, project.getScriptPath(), file -> {
                 setCodeText(file);
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
             }).showChooseDialog();

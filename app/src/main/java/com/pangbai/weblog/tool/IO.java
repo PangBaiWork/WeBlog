@@ -40,6 +40,7 @@ public class IO {
                     fos.write(mByte, 0, bt);
                     // dealtByte+=bt;
                 }
+                fos.getFD().sync();
                 fos.flush();
                 inputStream.close();
                 fos.close();

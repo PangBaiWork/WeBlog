@@ -83,7 +83,7 @@ Open the terminal at the bottom of WeBlog and type this.
 ```shell
 git config --global user.name "yourname"
 git config --global user.email "youremail"
-ssh-keygen -t rsa -C your email.
+ssh-keygen -t rsa -C "youremail"
 ```
 Enter twice .    
 After the terminal has finished outputting the message, run  

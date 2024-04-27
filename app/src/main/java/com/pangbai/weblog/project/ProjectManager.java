@@ -26,6 +26,7 @@ public class ProjectManager {
     }
 
 
+
     public boolean createProject() {
         boolean init = project.blogCmd.initBlog(project.projectPath);
         if (!init) return false;
@@ -33,11 +34,11 @@ public class ProjectManager {
         return true;
     }
 
-    public boolean createScript(Context context) {
+   /* public boolean createScript(Context context) {
         if (new File(project.scriptPath).exists()) return true;
         IO.copyAssetsDirToSDCard(context, "scripts/" + project.blogType.name(), project.scriptPath);
         return true;
-    }
+    }*/
 
     public static void saveCurrentProject(Project project) {
         String[] infor = new String[]{project.blogName, project.getProjectPath(), project.blogType.name()};

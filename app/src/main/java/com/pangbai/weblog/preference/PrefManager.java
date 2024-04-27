@@ -14,12 +14,14 @@ public class PrefManager {
         category,
         current_project,
         current_file,
-        first_launch,
+        first_launch_mark,
         bl_interface_undo_button_display,
         bl_artical_title_to_md5
     }
 
     static SharedPreferences pref;
+    //1 for first installation , 2 for reinstalltation
+    public   static int isFirstOrReinstall_flag=0;
 
 
 
@@ -30,9 +32,13 @@ public class PrefManager {
 
     }
 
-    public static boolean isFirstLaunch() {
-        if (getBoolen(Keys.first_launch,true)) {
-            putBoolen(Keys.first_launch,false);
+    public static boolean isFirstOrReinstall(Context context) {
+        String mark= context.getApplicationInfo().nativeLibraryDir;
+        String defaults="defaults";
+        String marked=getString(Keys.first_launch_mark,defaults);
+        if (!mark.equals(marked)) {
+            putString(Keys.first_launch_mark,mark);
+            isFirstOrReinstall_flag=marked.equals(defaults)?1:2;
             return true;
         }
         return false;

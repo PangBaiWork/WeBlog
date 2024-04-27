@@ -4,12 +4,13 @@ import com.pangbai.weblog.execute.BlogCmd;
 import com.pangbai.weblog.execute.HexoExer;
 import com.pangbai.weblog.execute.HugoExer;
 import com.pangbai.weblog.project.ProjectManager;
+import com.pangbai.weblog.tool.Init;
 
 public class Project {
     String projectPath;
     String blogName;
   public   ProjectManager.Type blogType;
-  public  String scriptPath;
+  //public  String scriptPath;
   public BlogCmd blogCmd;
 
     public Project( String name,String path, ProjectManager.Type type) {
@@ -21,7 +22,7 @@ public class Project {
         } else if (type== ProjectManager.Type.hugo) {
             blogCmd=new HugoExer(projectPath);
         }
-        scriptPath=projectPath+"/.scripts";
+    //    scriptPath=projectPath+"/.scripts";
     }
 
     public String getProjectPath() {
@@ -38,5 +39,8 @@ public class Project {
 
     public void setBlogName(String blogName) {
         this.blogName = blogName;
+    }
+    public String getScriptPath(){
+        return Init.scriptsPath+blogType;
     }
 }

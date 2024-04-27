@@ -3,8 +3,6 @@ package com.pangbai.weblog.tool;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,19 +13,19 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
 import com.pangbai.weblog.R;
 import com.pangbai.weblog.execute.cmdExer;
+import com.pangbai.weblog.preference.PrefManager;
+import com.pangbai.weblog.project.ProjectManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import br.tiagohm.markdownview.Utils;
 import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
 
@@ -40,13 +38,14 @@ public class Init {
     //  public static String shellPath;
     public static String libDir, binDir, nodeDir, weblogDir;
 
-    public static String busyboxPath, shPath;
+    public static String busyboxPath, shPath,scriptsPath;
     public static String[] envp;
     final public static String sdcardPath = "/storage/emulated/0/";
     final public static String linker = "/system/bin/linker64";
     public static String keyPath;
-    final public static boolean android10=Build.VERSION.SDK_INT>=29;
+    final public static boolean android10 = Build.VERSION.SDK_INT >= 29;
     boolean result;
+
 
     AlertDialog dialog;
     public static String systemShell = "/system/bin/sh";
@@ -65,6 +64,7 @@ public class Init {
         nodeDir = binDir + "/node";
         weblogDir = filesDirPath + "/weblog";
         keyPath = filesDirPath + "/weblog/keys";
+        scriptsPath = filesDirPath + "/script/";
         String[] envp = {
                 //"PATH=" + "/system/bin"
                 "PATH=" + Init.binDir + ":/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/vendor/bin",
@@ -76,52 +76,53 @@ public class Init {
                 "PS1=\\[\\e[1\\;31m\\])➜ \\[\\e[1;36m\\]\\W\\[\\e[m\\] ",
                 "TERM=xterm-256color",
                 "LANG=en_US.UTF-8",
-                android10?"ANDROID10=1":"ANDROID10=0",
+                android10 ? "ANDROID10=1" : "ANDROID10=0",
                 "ANDROID_DATA=/data",
                 "ANDROID_ROOT=/system"
         };
         Init.envp = envp;
 
 
-        if (!new File(binDir).exists()) {
+
+
+        if (PrefManager.isFirstOrReinstall_flag==1) {
+            //First installation
             dialog = DialogUtils.showLoadingDialog(ct, ct.getString(R.string.load_resources));
+            ThreadUtil.thread(() -> {
+                        try {
+                            result = installEnv(ct);
+                        } catch (IOException | InterruptedException e) {
+                            Log.e("InstallEnv  Failed",e.getMessage());
+                            result = false;
+                        }
 
-            new Thread() {
-                @Override
-                public void run() {
 
-                    try {
-                        result = installEnv(ct);
-                    } catch (IOException | InterruptedException e) {
-                        result = false;
-                        // throw new RuntimeException(e);
+                        initScript(ct);
+                        dialog.dismiss();
+                        util.runOnUiThread(() -> {
+                            if (result)
+                                DialogUtils.showConfirmationDialog(ct, "Environment installation successful", ct.getString(R.string.ask_install_hexo),
+                                        () -> {
+                                            dialog = DialogUtils.showLoadingDialog(ct, "Installing  hexo ");
+                                            installHexo(ct);
+                                        }, () -> {
+                                            dialog.dismiss();
+                                            checkPermission(ct);
+
+                                        });
+                            else
+                                checkPermission(ct);
+
+
+                        });
+
+
                     }
+            );
 
-
-                    new File(filesDirPath + "/home").mkdirs();
-                    dialog.dismiss();
-                    util.runOnUiThread(() -> {
-                        if (result)
-                            DialogUtils.showConfirmationDialog(ct, "Environment installation successful", ct.getString(R.string.ask_install_hexo),
-                                    () -> {
-                                        dialog = DialogUtils.showLoadingDialog(ct, "Installing hexo");
-                                        installHexo(ct);
-                                    }, () -> {
-                                        dialog.dismiss();
-                                        checkPermission(ct);
-
-                                    });
-                        else
-                            checkPermission(ct);
-
-
-
-                    });
-
-
-                }
-            }.start();
-
+        } else if (PrefManager.isFirstOrReinstall_flag==2) {
+            //reinstalltion in case of test and update
+            initScript(ct);
         }
 
 
@@ -129,7 +130,7 @@ public class Init {
 
     @SuppressLint("SuspiciousIndentation")
     boolean installEnv(Context context) throws IOException, InterruptedException {
-      //  String name = "busybox";
+        //  String name = "busybox";
         IO.copyAssetsDirToSDCard(context, "busybox", binDir);
         IO.copyAssetsDirToSDCard(context, "libexec.so", libDir);
         new File(busyboxPath).setExecutable(true);
@@ -157,10 +158,26 @@ public class Init {
         inputStream.close();
         outputStream.close();
         //  int exit = cmdExer.process.waitFor();
-        return cmdExer.process.waitFor()==0;
+        return cmdExer.process.waitFor() == 0;
 
 
     }
+
+    void initScript(Context context) {
+
+        boolean result;
+        new File(filesDirPath + "/home").mkdirs();
+
+        for (String type : ProjectManager.getTypeArray()) {
+            String scripts =  scriptsPath+ type;
+            result = new File(scripts).mkdirs();
+            if (!result) continue;
+            IO.copyAssetsDirToSDCard(context, "scripts/" + type, scripts);
+        }
+
+
+    }
+
 
     void installHexo(Activity ct) {
         ThreadUtil.thread(() -> {
@@ -174,8 +191,6 @@ public class Init {
         });
 
     }
-
-
 
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -201,7 +216,7 @@ public class Init {
 
             } else {
                 //   havePermission = true;
-                Log.i("swyLog", "Android 11以上，当前已有权限");
+                Log.i("Permission", "Android 11以上，当前已有权限");
             }
         } else {
             if (ActivityCompat.checkSelfPermission(ct, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -216,7 +231,7 @@ public class Init {
                         }, null);
             } else {
                 // havePermission = true;
-                Log.i("swyLog", "Android 6.0以上，11以下，当前已有权限");
+                Log.i("Permission", "Android 6.0以上，11以下，当前已有权限");
             }
         }
     }

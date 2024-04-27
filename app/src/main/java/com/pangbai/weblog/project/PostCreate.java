@@ -27,11 +27,11 @@ public abstract class PostCreate {
             File file = new File(path);
             if (file.exists()) return ;
             File dir = file.getParentFile();
-            if (!dir.exists()) dir.mkdirs();
+            if (!dir.exists())  dir.mkdirs();
             try {
                 file.createNewFile();
                 writer = new PrintWriter(new FileWriter(file), true);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 

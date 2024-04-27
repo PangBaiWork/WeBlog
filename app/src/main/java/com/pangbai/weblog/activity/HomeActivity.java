@@ -81,7 +81,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
                     ThreadUtil.thread(() -> {
                         boolean init = projectManager.createProject();
-                       if (init) projectManager.createScript(HomeActivity.this);
                         runOnUiThread(() -> {
                             dialog.dismiss();
                             if (init) {
@@ -117,7 +116,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 return;
                             }
                             selectProject = new Project(file.getName(), file.getAbsolutePath(), type);
-                            new ProjectManager(selectProject).createScript(HomeActivity.this);
                         }
                         dialog.dismiss();
                         runOnUiThread(() -> {
@@ -142,7 +140,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 selectProject = new Project(file.getName(), file.getAbsolutePath(), type);
-                new ProjectManager(selectProject).createScript(HomeActivity.this);
                 openProject(selectProject);
             });
         } else if (id == R.id.open_terminal) {

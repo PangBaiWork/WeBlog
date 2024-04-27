@@ -79,7 +79,7 @@ git clone https://x-access-token:你的令牌@github.com/your-username/your-repo
 ```shell
 git config --global user.name "yourname"
 git config --global user.email "youremail"
-ssh-keygen -t rsa -C 你的邮箱
+ssh-keygen -t rsa -C  "youremail"
 ``` 
 连续回车两次   
 终端输出完信息后，再执行   
