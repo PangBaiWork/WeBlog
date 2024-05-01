@@ -76,7 +76,7 @@ public class Init {
                 "PS1=\\[\\e[1\\;31m\\])➜ \\[\\e[1;36m\\]\\W\\[\\e[m\\] ",
                 "TERM=xterm-256color",
                 "LANG=en_US.UTF-8",
-                android10 ? "ANDROID10=1" : "ANDROID10=0",
+                android10 ? "ANDROID10=1 " : "ANDROID10=0",
                 "ANDROID_DATA=/data",
                 "ANDROID_ROOT=/system"
         };
@@ -174,9 +174,10 @@ public class Init {
         for (String type : ProjectManager.getTypeArray()) {
             String scripts =  scriptsPath+ type;
             result = new File(scripts).mkdirs();
-            if (!result) continue;
+           // if (!result) continue;
             IO.copyAssetsDirToSDCard(context, "scripts/" + type, scripts);
         }
+
 
 
     }

@@ -25,6 +25,8 @@ import com.pangbai.terminal.TerminalSession;
 import com.pangbai.terminal.TerminalSessionClient;
 import com.pangbai.weblog.tool.Init;
 
+import java.nio.charset.StandardCharsets;
+
 import br.tiagohm.markdownview.MarkdownView;
 
 
@@ -125,7 +127,9 @@ public final class SuperTerminalView extends TerminalView {
     public void setKeyView(ExtraKeysView keys){
         this.mkeys=keys;
     }
-
+    public void executeInTerminal(String cmd){
+       mTerminalSession.writeDe(cmd);
+    }
 
     public boolean runProcess() {
 

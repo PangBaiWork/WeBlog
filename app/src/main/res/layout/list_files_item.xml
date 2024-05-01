@@ -16,7 +16,7 @@
         android:background="@drawable/ic_folder"
         android:orientation="horizontal" />
 
-    <com.pangbai.weblog.view.CustomTextView
+    <com.pangbai.weblog.view.MdTitleTextView
         android:id="@+id/list_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

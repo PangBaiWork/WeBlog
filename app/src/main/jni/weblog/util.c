@@ -4,7 +4,7 @@
 #include <linux/fcntl.h>
 #include <syscall.h>
 #include <unistd.h>
-
+//abandoned
 JNIEXPORT jboolean JNICALL
 Java_com_pangbai_weblog_tool_Jni_renameFile(JNIEnv *env, jclass clazz, jstring target,
                                             jstring newFile) {

@@ -16,7 +16,7 @@ public class SymInputView extends LinearLayout {
     private int textColor = Color.BLACK;
     private CodeEditor editor;
     public String[] defaultSym = new String[]{
-            "→",
+            "Tab",
             "B",
             "I",
             ">",

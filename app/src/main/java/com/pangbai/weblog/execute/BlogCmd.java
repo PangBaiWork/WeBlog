@@ -1,21 +1,23 @@
 package com.pangbai.weblog.execute;
 
+import com.pangbai.weblog.project.Project;
+import com.pangbai.weblog.tool.Init;
+
+import java.util.ArrayList;
+
 public abstract class BlogCmd {
-    public static String checkGitUpdate(){
-      cmdExer.execute("hugo version", false);
-      return null;
-    }
+
+
+
     public static String checkEnvironment() {
         boolean cmd;
         String res ;
-
         cmd = cmdExer.execute("hugo version", false) == 0;
         if (cmd) {
             res = cmdExer.result;
         } else {
             res = "Hugo:  Not found \n";
         }
-
         cmd = cmdExer.execute("\nhexo version", false) == 0;
         if (cmd) {
             res += cmdExer.result;
@@ -23,8 +25,6 @@ public abstract class BlogCmd {
             res += "Hexo:  Not found \n";
         }
         return res;
-
-
     }
 
     public static void setProjectPath(String path) {

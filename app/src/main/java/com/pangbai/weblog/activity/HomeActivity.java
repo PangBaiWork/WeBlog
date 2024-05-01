@@ -109,7 +109,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     AlertDialog dialog = DialogUtils.showLoadingDialog(this);
                     ThreadUtil.thread(() -> {
                         boolean clone = cmdExer.execute("git clone " + userInput + " " + file.getAbsolutePath(), false) == 0;
-                        if (clone) {
+                        boolean setSafeDir = cmdExer.execute("git config --global --add safe.directory " + file.getAbsolutePath(), false) == 0;
+                        if (clone&&setSafeDir) {
                             ProjectManager.Type type = checkType(file);
                             if (type == null) {
                                 runOnUiThread(() -> Snackbar.make(binding.getRoot(), "Is not a hexo or hugo project", Snackbar.LENGTH_SHORT).show());

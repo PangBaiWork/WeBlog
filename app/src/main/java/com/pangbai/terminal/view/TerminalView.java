@@ -331,7 +331,7 @@ public class TerminalView extends View {
 
 			
 			//发送文本
-            void sendTextToTerminal(CharSequence text) {
+         public  void sendTextToTerminal(CharSequence text) {
                 stopTextSelectionMode();
                 final int textLengthInChars = text.length();
                 for (int i = 0; i < textLengthInChars; i++) {

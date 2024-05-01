@@ -41,6 +41,6 @@ public class Project {
         this.blogName = blogName;
     }
     public String getScriptPath(){
-        return Init.scriptsPath+blogType;
+        return Init.scriptsPath+blogType.name();
     }
 }

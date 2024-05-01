@@ -52,6 +52,7 @@ import com.pangbai.weblog.view.DrawerAnim;
 import com.pangbai.weblog.view.FileListSelect;
 import com.pangbai.weblog.view.FilesListAdapter;
 import com.pangbai.weblog.view.MainViewPagerAdapter;
+import com.pangbai.weblog.view.ScriptsLogTextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,9 +60,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import br.tiagohm.markdownview.MarkdownView;
+import br.tiagohm.markdownview.Utils;
 import br.tiagohm.markdownview.css.styles.Github;
 import io.github.rosemoe.sora.event.PublishSearchResultEvent;
 import io.github.rosemoe.sora.text.Content;
@@ -69,17 +72,19 @@ import io.github.rosemoe.sora.text.ContentIO;
 import io.github.rosemoe.sora.widget.EditorSearcher;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     LayoutTerminalBinding cmdBinding;
     MarkdownView markdown;
+    ScriptsLogTextView logTextView;
     Content editorText;
     File currentFile;
 
     Project project;
-    Process livePreview;
+
     FilesListAdapter filesListAdapter;
     SearchHandle handle;
+    ExecuteStateControl executeStateControl;
 
     @SuppressLint("ResourceType")
     @Override
@@ -103,9 +108,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setLayout();
         setRecycleView();
         setTabLayout();
-
         setEditor();
-        setNavigation();
+        executeStateControl=new ExecuteStateControl(binding,logTextView,project);
+
 
         String path = PrefManager.getString(PrefManager.Keys.current_file, "");
         File file = new File(path);
@@ -113,13 +118,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (file.exists()) {
             setCodeText(file);
             currentFile = file;
-            filesListAdapter.setList(currentFile.getParentFile());
+            filesListAdapter.setList(Objects.requireNonNull(currentFile.getParentFile()));
 
         } else {
             binding.editor.setText("No file be Displayed\n" + getString(R.string.how_to_open_terminal));
 
         }
-        //   setCodeText(new File(project.getProjectPath()));
+        List<String> init=new ArrayList<>(){{add("Init.sh");}};
+        executeStateControl.runScripts(init);
+
 
 
     }
@@ -135,8 +142,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             boolean isUndoDisplay = Config.getBool(PrefManager.Keys.bl_interface_undo_button_display);
             View view = isUndoDisplay ? binding.floatActionAdd : binding.floatActionLayout;
             if (oldBottom - bottom > 50) {
+                //keyboard up
+                binding.executionStatus.setVisibility(View.GONE);
+                binding.editSymbolParent.setVisibility(View.VISIBLE);
                 view.setVisibility(View.INVISIBLE);
             } else {
+                binding.executionStatus.setVisibility(View.VISIBLE);
+                binding.editSymbolParent.setVisibility(View.GONE);
+                //keyboard down
                 view.setVisibility(View.VISIBLE);
             }
         });
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    void setCodeText(File file) {
+    public   void setCodeText(File file) {
         handle.stopSearch();
         TextMate.setLanguage(binding.editor, file.getName());
         ThreadUtil.thread(() -> {
@@ -190,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.drawerLayout.setScrimColor(Color.TRANSPARENT);
         binding.drawerLayout.addDrawerListener(new DrawerAnim(binding.navigationView));
 
+        binding.navigationView.setNavigationItemSelectedListener(new NavigationControl(this,binding,project));
+
 
         ///   SearchHandle search= (SearchHandle) ((MenuItem) binding.toolbar.findViewById(R.id.menu_search)).getActionView();
         handle = new SearchHandle(binding.editor.getSearcher());
@@ -201,24 +216,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (id == R.id.menu_run) {
                 File file = new File(project.getScriptPath());
                 if (!file.exists()) return false;
-                DialogUtils.showMultiSelectDialog(this, getString(R.string.select_scripts), file.list(), selets -> {
-                    binding.progressbar.setIndeterminate(true);
-                    Snackbar.make(binding.getRoot(), "Excuting", Snackbar.LENGTH_SHORT).show();
-
-                    ThreadUtil.thread(() -> {
-                        boolean cmd = cmdExer.executeScripts(selets, project.getScriptPath(), true) == 0;
-                        runOnUiThread(() -> {
-                            binding.progressbar.setIndeterminate(false);
-                            if (cmd) {
-                                Snackbar.make(binding.getRoot(), "Success", Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                DialogUtils.showConfirmationDialog(this, getString(R.string.scripts_execution_failed), cmdExer.result, getString(android.R.string.copy), getString(R.string.cancle), () -> {
-                                    util.copyToClipboard(this, cmdExer.result);}, null);
-                            }
-                        });
-                    });
-
-                });
+                DialogUtils.showMultiSelectDialog(this, getString(R.string.select_scripts), file.list(), executeStateControl::runScripts);
 
             } else if (id == R.id.menu_folder) {
                 binding.drawerLayout.openDrawer(GravityCompat.END);
@@ -229,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else if (id == R.id.menu_save) {
                 saveFile();
             } else if (id == R.id.menu_search) {
-
                 DialogUtils.showInputDialog(this, getString(R.string.search_in_editor), userInput -> {
                     binding.searchBar.getRoot().setVisibility(View.GONE);
                     binding.editor.getSearcher().search(userInput, new EditorSearcher.SearchOptions(true, true));
@@ -251,6 +248,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+
+    void runScripts(List<String> scriptsPath){
+        binding.progressbar.setIndeterminate(true);
+        Snackbar.make(binding.getRoot(), "Excuting", Snackbar.LENGTH_SHORT).show();
+        logTextView.appendScriptText(scriptsPath);
+        ThreadUtil.thread(() -> {
+            boolean cmd = cmdExer.executeScripts(scriptsPath, project.getScriptPath(), true) == 0;
+            runOnUiThread(() -> {
+                binding.progressbar.setIndeterminate(false);
+
+                logTextView.appendLogText(cmdExer.result);
+                if (cmd) {
+                    Snackbar.make(binding.getRoot(), "Success", Snackbar.LENGTH_SHORT).show();
+                } else {
+
+                    DialogUtils.showConfirmationDialog(this, getString(R.string.scripts_execution_failed), cmdExer.result, getString(android.R.string.copy), getString(R.string.cancle), () -> {
+                        util.copyToClipboard(this, cmdExer.result);}, null);
+                }
+            });
+        });
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     void setRecycleView() {
         FileListBinding include_binding = binding.include;
@@ -267,7 +286,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     binding.drawerLayout.closeDrawer(GravityCompat.END);
                 }
         );
-        include_binding.recycleviewFiles.setLayoutAnimation(new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
+        include_binding.recycleviewFiles.setLayoutAnimation(
+                new LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.recycle_view)));
         include_binding.recycleviewFiles.setAdapter(filesListAdapter);
         include_binding.recycleviewFiles.setLayoutManager(new LinearLayoutManager(this));
         String path;
@@ -279,87 +299,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint({"ClickableViewAccessibility", "ResourceType"})
     void setTabLayout() {
-        ViewPager viewPager = findViewById(R.id.viewpager);
         List<View> views = new ArrayList<>();
-
         cmdBinding = LayoutTerminalBinding.inflate(getLayoutInflater());
         cmdBinding.terminalBg.setBackgroundColor(ColorUtils.setAlphaComponent(com.google.android.material.R.attr.colorPrimary, 200));
         cmdBinding.ExtraKey.addView(cmdBinding.terminal.createKeyView());
         cmdBinding.ExtraKey.setBackgroundColor(Color.WHITE);
         cmdBinding.terminal.setTerminal(project.getProjectPath());
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
         params.height = 400;
         params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-
         markdown = new MarkdownView(this.getApplicationContext());
         markdown.setLayoutParams(params);
 
         views.add(cmdBinding.getRoot());
         views.add(markdown);
-
+        logTextView=new ScriptsLogTextView(this);
+        logTextView.setLayoutParams(params);
+        views.add(logTextView);
 
         markdown.addStyleSheet(new Github());
         markdown.loadMarkdown("## No markdown file in Editor");
 
         MainViewPagerAdapter fragmentAdapter = new MainViewPagerAdapter(views);
-        viewPager.setAdapter(fragmentAdapter);
-        // tabLayout跟viewpager关联
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-        LinearLayout bottomSheet = findViewById(R.id.bottom_sheet);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-        behavior.setHalfExpandedRatio(0.3F);
-        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    binding.editSymbol.setVisibility(View.VISIBLE);
-                } else {
-                    binding.editSymbol.setVisibility(View.GONE);
-                }
-                // focus on cmdview;
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    if (tabLayout.getSelectedTabPosition() == 0) {
-                        cmdBinding.terminal.requestFocus();
-                    }
-                }
-            }
+        new BottomTabControl(binding,cmdBinding,fragmentAdapter).setup();
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                // focus on cmdview;
-                if (tab.getPosition() == 1) {
-                    cmdBinding.terminal.requestFocus();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
 
     }
 
-    void setNavigation() {
-        binding.navigationView.setNavigationItemSelectedListener(this);
 
-    }
 
     void saveFile() {
-
         if (currentFile == null) return;
         binding.progressbar.setIndeterminate(true);
         ThreadUtil.thread(() -> {
@@ -391,65 +363,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
         super.onWindowFocusChanged(hasFocus);
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.project_server) {
-            if (livePreview != null) {
-                livePreview.destroy();
-                return false;
-            }
-            DialogUtils.showInputDialog(this, getString(R.string.start_server) + project.blogType.name()
-                    , "4000", userInput -> {
-                        item.setChecked(true);
-                        Snackbar.make(binding.navigationView, "Server Running", Snackbar.LENGTH_SHORT).show();
-                        livePreview = project.blogCmd.Server(userInput, false);
-                        checkProcess(item);
-                    });
-
-
-        } else if (id == R.id.project_script) {
-            new FileListSelect(this, getString(R.string.scripts_list), false, project.getScriptPath(), file -> {
-                setCodeText(file);
-                binding.drawerLayout.closeDrawer(GravityCompat.START);
-            }).showChooseDialog();
-        } else if (id == R.id.project_close) {
-            if (livePreview != null) livePreview.destroy();
-            util.startActivity(this, HomeActivity.class, false);
-            finish();
-        } else if (id == R.id.global_setting) {
-            util.startActivity(this, SettingsActivity.class, false);
-        } else if (id == R.id.global_env) {
-            Snackbar.make(binding.navigationView, "Checking", Snackbar.LENGTH_SHORT).show();
-            ThreadUtil.thread(() -> {
-                String res = BlogCmd.checkEnvironment();
-                runOnUiThread(() -> {
-                    DialogUtils.showConfirmationDialog(this, getString(R.string.environment), res, null, null);
-                });
-            });
-        }
-        return false;
-    }
-
-    void checkProcess(MenuItem item) {
-        ThreadUtil.thread(() -> {
-            try {
-                livePreview.waitFor();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            livePreview.destroy();
-            livePreview = null;
-            runOnUiThread(() -> {
-                Snackbar.make(binding.getRoot(), "The LivePreview ended", Snackbar.LENGTH_SHORT).show();
-                item.setChecked(false);
-            });
-        });
-
-
     }
 
     @Override

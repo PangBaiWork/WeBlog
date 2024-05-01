@@ -51,7 +51,7 @@ public class MainViewPagerAdapter extends PagerAdapter {
             case 1:
                 return "Visual";
             case 2:
-                return "Posts";
+                return "Logs";
             default:
                 return "";
         }

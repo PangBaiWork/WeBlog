@@ -257,7 +257,7 @@ public void writeDe(String com){
     }
 
     /** Notify the {@link #mClient} that the screen has changed. */
-    private void notifyScreenUpdate() {
+    public void notifyScreenUpdate() {
         mClient.onTextChanged(this);
     }
 
@@ -388,7 +388,6 @@ public void writeDe(String com){
             int bytesRead = mProcessToTerminalIOQueue.read(mReceiveBuffer, false);
             if (bytesRead > 0) {
 	        mEmulator.append(mReceiveBuffer, bytesRead);
-				
                 notifyScreenUpdate();
             }
 
