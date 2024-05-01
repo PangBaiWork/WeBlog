@@ -14,9 +14,11 @@ public class PrefManager {
         category,
         current_project,
         current_file,
+        interface_font,
         first_launch_mark,
         bl_interface_undo_button_display,
-        bl_artical_title_to_md5
+        bl_artical_title_to_md5,
+
     }
 
     static SharedPreferences pref;

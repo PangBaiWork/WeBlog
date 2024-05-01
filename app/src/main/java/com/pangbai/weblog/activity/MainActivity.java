@@ -135,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
     void setEditor() {
         binding.editor.setCursorAnimationEnabled(false);
         binding.editSymbol.init(binding.editor);
+        String fontPath=  PrefManager.getString(PrefManager.Keys.interface_font,null);
+        binding.editor.setFont(fontPath);
+
         //binding.editor.getProps().disallowSuggestions=true;
 
         binding.editor.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {

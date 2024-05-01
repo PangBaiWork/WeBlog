@@ -1,22 +1,12 @@
 package com.pangbai.weblog.editor;
 
-import static com.pangbai.weblog.tool.util.runOnUiThread;
-
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.inputmethod.ExtractedTextRequest;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.pangbai.weblog.tool.IO;
-import com.pangbai.weblog.tool.ThreadUtil;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import io.github.rosemoe.sora.text.ContentIO;
 import io.github.rosemoe.sora.widget.CodeEditor;
 
 public class Editor extends CodeEditor {
@@ -34,6 +24,24 @@ public class Editor extends CodeEditor {
 
     public Editor(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+    public void setFont(@Nullable  String path){
+        Typeface font;
+        if (path==null) {
+            font= Typeface.createFromAsset(getContext().getAssets(), "font/JetBrainsMono-Regular.ttf");
+            setTypefaceText(font);
+
+        }else {
+            try {
+                font=Typeface.createFromFile(path);
+                setTypefaceText(font);
+            }catch (Exception ignored){
+
+            }
+
+
+        }
+
     }
 
     // Disable inputMethod suggestion when editor focused

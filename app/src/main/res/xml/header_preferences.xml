@@ -8,6 +8,11 @@
             app:summaryOn="Always visible"
             app:icon="@drawable/ic_file_previous"
             app:title="Undo float action button" />
+        <EditTextPreference
+            app:key="interface_font"
+            app:summary="Custom Font"
+            android:dialogTitle="Please input font Path"
+            app:title="Set Font"/>
 
     </PreferenceCategory>
     <PreferenceCategory app:title="Artical">
