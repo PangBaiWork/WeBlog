@@ -88,7 +88,7 @@ public class FilesListAdapter extends RecyclerView.Adapter<Holder> {
                         @Override
                         public void run() {
                             // use shell to delete for better speed
-                            IO.deleteFileOrFolder(targetFile);
+                            IO.deleteFileOrFolder(targetFile.getAbsolutePath());
                             util.runOnUiThread(() -> {
                                 setList(Objects.requireNonNull(targetFile.getParentFile()));
                             });

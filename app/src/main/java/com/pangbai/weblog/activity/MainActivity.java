@@ -124,8 +124,12 @@ public class MainActivity extends AppCompatActivity {
             binding.editor.setText("No file be Displayed\n" + getString(R.string.how_to_open_terminal));
 
         }
-        List<String> init=new ArrayList<>(){{add("Init.sh");}};
-        executeStateControl.runScripts(init);
+        if (Config.getBool(PrefManager.Keys.bl_script_init)) {
+            List<String> init = new ArrayList<>() {{
+                add("Init.sh");
+            }};
+            executeStateControl.runScripts(init);
+        }
 
 
 
@@ -153,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 binding.executionStatus.setVisibility(View.VISIBLE);
                 binding.editSymbolParent.setVisibility(View.GONE);
                 //keyboard down
+                if (Config.getBool(PrefManager.Keys.bl_editor_autosave))saveFile();
                 view.setVisibility(View.VISIBLE);
             }
         });
@@ -173,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
                         filesListAdapter.refreshList();
                     }).show(getSupportFragmentManager(), "")).setCanceledOnTouchOutside(false);
         });
+
+
+
 
 
     }
@@ -365,11 +373,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         }
+        if (Config.getBool(PrefManager.Keys.bl_editor_autosave))saveFile();
         super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
     protected void onDestroy() {
+        if (Config.getBool(PrefManager.Keys.bl_editor_autosave))saveFile();
         //binding.editor.setEditorLanguage(null);
         if (binding!=null) {
             binding.editor.release();

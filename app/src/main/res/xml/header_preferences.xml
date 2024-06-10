@@ -8,11 +8,7 @@
             app:summaryOn="Always visible"
             app:icon="@drawable/ic_file_previous"
             app:title="Undo float action button" />
-        <EditTextPreference
-            app:key="interface_font"
-            app:summary="Custom Font"
-            android:dialogTitle="Please input font Path"
-            app:title="Set Font"/>
+
 
     </PreferenceCategory>
     <PreferenceCategory app:title="Artical">
@@ -23,6 +19,30 @@
         app:summaryOn="It takes effect when the title is not an ASCII string"
         app:icon="@drawable/ic_setting_markdown"
         app:title="Convert the file name to md5" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Scripts">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="bl_script_init"
+            app:summaryOff="Execute initialization script Init.sh"
+            app:summaryOn="Execute initialization script Init.sh"
+            app:icon="@drawable/ic_script"
+            app:title="Init.sh" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Editor">
+        <EditTextPreference
+            app:key="interface_font"
+            app:summary="Custom Font"
+            android:dialogTitle="Please input font Path"
+            app:title="set font"/>
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="bl_editor_autosave"
+            app:summaryOff="Automatically save files in the editor"
+            app:summaryOn="Automatically save files in the editor"
+            app:title="auto save" />
     </PreferenceCategory>
   <!--
     <Preference

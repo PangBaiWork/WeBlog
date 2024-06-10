@@ -85,7 +85,7 @@ public class Init {
 
 
 
-        if (PrefManager.isFirstOrReinstall_flag==1) {
+        if (PrefManager.isFirstOrReinstall_flag!=0) {
             //First installation
             dialog = DialogUtils.showLoadingDialog(ct, ct.getString(R.string.load_resources));
             ThreadUtil.thread(() -> {
@@ -96,8 +96,8 @@ public class Init {
                             result = false;
                         }
 
+                        if (PrefManager.isFirstOrReinstall_flag==1) initScript(ct);
 
-                        initScript(ct);
                         dialog.dismiss();
                         util.runOnUiThread(() -> {
                             if (result)
@@ -122,18 +122,15 @@ public class Init {
                     }
             );
 
-        } else if (PrefManager.isFirstOrReinstall_flag==2) {
-            //reinstalltion in case of test and update
-            initScript(ct);
-            checkPermission(ct);
         }
-
 
     }
 
     @SuppressLint("SuspiciousIndentation")
     boolean installEnv(Context context) throws IOException, InterruptedException {
         //  String name = "busybox";
+        IO.deleteFileOrFolder(filesDirPath+"/usr");
+        //new File(filesDirPath).mkdirs();
         IO.copyAssetsDirToSDCard(context, "busybox", binDir);
         IO.copyAssetsDirToSDCard(context, "libexec.so", libDir);
         new File(busyboxPath).setExecutable(true);
@@ -186,10 +183,12 @@ public class Init {
     void installHexo(Activity ct) {
         ThreadUtil.thread(() -> {
             cmdExer.execute("npm config set registry https://npmreg.proxy.ustclug.org", false);
+            cmdExer.execute("npm config set ignore-scripts true" ,false);
+            cmdExer.execute("npm config set bin-links false",false);
             boolean result = cmdExer.execute("npm install -g hexo-cli", false) == 0;
             dialog.dismiss();
             util.runOnUiThread(() -> {
-                Toast.makeText(ct, result ? "Success" : "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ct, result ? "Success" : "Failed to install hexo", Toast.LENGTH_SHORT).show();
                 checkPermission(ct);
             });
         });

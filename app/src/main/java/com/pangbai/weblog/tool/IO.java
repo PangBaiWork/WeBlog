@@ -128,8 +128,8 @@ public class IO {
         return result == 0;
     }
 
-    public static boolean deleteFileOrFolder(File folder) {
-        int result = cmdExer.execute("rm -rf " + folder.getAbsolutePath(), false);
+    public static boolean deleteFileOrFolder(String path) {
+        int result = cmdExer.execute("rm -rf " + path, false);
         return result == 0;
     }
 

@@ -18,6 +18,8 @@ public class PrefManager {
         first_launch_mark,
         bl_interface_undo_button_display,
         bl_artical_title_to_md5,
+        bl_editor_autosave,
+        bl_script_init
 
     }
 
@@ -41,6 +43,7 @@ public class PrefManager {
         if (!mark.equals(marked)) {
             putString(Keys.first_launch_mark,mark);
             isFirstOrReinstall_flag=marked.equals(defaults)?1:2;
+            // 1 for first install,2 for reinstall
             return true;
         }
         return false;
