@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (Config.getBool(PrefManager.Keys.bl_editor_autosave))saveFile();
+ //       if (Config.getBool(PrefManager.Keys.bl_editor_autosave))saveFile();
         //binding.editor.setEditorLanguage(null);
         if (binding!=null) {
             binding.editor.release();
