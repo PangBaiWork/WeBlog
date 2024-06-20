@@ -184,7 +184,7 @@ public class Init {
         ThreadUtil.thread(() -> {
             cmdExer.execute("npm config set registry https://npmreg.proxy.ustclug.org", false);
             cmdExer.execute("npm config set ignore-scripts true" ,false);
-            cmdExer.execute("npm config set bin-links false",false);
+          //  cmdExer.execute("",false);
             boolean result = cmdExer.execute("npm install -g hexo-cli", false) == 0;
             dialog.dismiss();
             util.runOnUiThread(() -> {
